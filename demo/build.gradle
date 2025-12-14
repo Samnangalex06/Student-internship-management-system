@@ -22,6 +22,21 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-thymeleaf
+	implementation("org.springframework.boot:spring-boot-starter-thymeleaf:3.5.8")
+	// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-actuator
+	implementation("org.springframework.boot:spring-boot-starter-actuator:3.5.8")
+	implementation("org.springframework.boot:spring-boot-starter-web:3.5.8")
+	// https://mvnrepository.com/artifact/org.flywaydb/flyway-core
+	implementation("org.flywaydb:flyway-core:11.17.0")
+	// https://mvnrepository.com/artifact/org.flywaydb/flyway-mysql
+	implementation("org.flywaydb:flyway-mysql:11.17.0")
+	// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-thymeleaf
+	implementation("org.springframework.boot:spring-boot-starter-thymeleaf:3.5.8")
+	// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-actuator
+	implementation("org.springframework.boot:spring-boot-starter-actuator:3.5.8")
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
 tasks.named('test') {
