@@ -1,0 +1,6 @@
+CREATE TABLE company (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(100) NOT NULL,
+    location VARCHAR(100),
+    type VARCHAR(50)
+);
