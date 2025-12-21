@@ -1,35 +1,25 @@
 package project.demo.entity;
 
-import project.demo.enums.ApplicationStatus;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "internship_applications")
+@Table(name = "internship_application")
 public class Application {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     @Column(name = "student_id", nullable = false)
-    private Long studentId;
+    private Integer studentId;
 
     @Column(name = "company_id", nullable = false)
-    private Long companyId;
+    private Integer companyId;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
-    private ApplicationStatus status;
-
-    @Column(name = "application_date", nullable = false)
-    private LocalDateTime applicationDate;
-
-    @Column(name = "start_date")
-    private LocalDateTime startDate;
-
-    @Column(name = "end_date")
-    private LocalDateTime endDate;
+    private ApplicationStatus status = ApplicationStatus.PENDING;
 
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
@@ -39,76 +29,42 @@ public class Application {
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
-
+    
     // Constructors
     public Application() {
     }
 
-    public Application(Long studentId, Long companyId, ApplicationStatus status) {
+    public Application(Integer studentId, Integer companyId) {
         this.studentId = studentId;
         this.companyId = companyId;
-        this.status = status;
-        this.applicationDate = LocalDateTime.now();
         this.createdAt = LocalDateTime.now();
     }
 
     // Getters and Setters
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
-    public Long getStudentId() {
+    public Integer getStudentId() {
         return studentId;
     }
 
-    public void setStudentId(Long studentId) {
+    public void setStudentId(Integer studentId) {
         this.studentId = studentId;
     }
 
-    public Long getCompanyId() {
+    public Integer getCompanyId() {
         return companyId;
     }
 
-    public void setCompanyId(Long companyId) {
+    public void setCompanyId(Integer companyId) {
         this.companyId = companyId;
     }
-
-    public ApplicationStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(ApplicationStatus status) {
-        this.status = status;
-    }
-
-    public LocalDateTime getApplicationDate() {
-        return applicationDate;
-    }
-
-    public void setApplicationDate(LocalDateTime applicationDate) {
-        this.applicationDate = applicationDate;
-    }
-
-    public LocalDateTime getStartDate() {
-        return startDate;
-    }
-
-    public void setStartDate(LocalDateTime startDate) {
-        this.startDate = startDate;
-    }
-
-    public LocalDateTime getEndDate() {
-        return endDate;
-    }
-
-    public void setEndDate(LocalDateTime endDate) {
-        this.endDate = endDate;
-    }
-
+    
     public String getDescription() {
         return description;
     }
@@ -132,4 +88,9 @@ public class Application {
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
+    public enum ApplicationStatus {
+        PENDING,
+        APPROVED,
+        REJECTED
+    }   
 }

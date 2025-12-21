@@ -1,10 +1,6 @@
 package project.demo.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "company")
@@ -12,17 +8,26 @@ public class Company {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
+    @Column(name = "name", nullable = false)
     private String name;
-    private String location;
-    private String type;
 
-    public Long getId() {
+    @Column(name = "address")
+    private String address;
+
+    @Column(name = "phone_number")
+    private Integer phoneNumber;
+
+    // Constructors
+    public Company() {}
+
+    // Getters and Setters
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -34,19 +39,19 @@ public class Company {
         this.name = name;
     }
 
-    public String getLocation() {
-        return location;
+    public String getAddress() {
+        return address;
     }
 
-    public void setLocation(String location) {
-        this.location = location;
+    public void setAddress(String address) {
+        this.address = address;
     }
 
-    public String getType() {
-        return type;
+    public Integer getPhoneNumber() {
+        return phoneNumber;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setPhoneNumber(Integer phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 }

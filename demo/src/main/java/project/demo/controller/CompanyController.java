@@ -31,7 +31,7 @@ public class CompanyController {
 
     // UPDATE company
     @PutMapping("/{id}")
-    public Company updateCompany(@PathVariable Long id,
+    public Company updateCompany(@PathVariable int id,
                                  @RequestBody Company company) {
         company.setId(id);
         return companyRepository.save(company);
@@ -39,7 +39,7 @@ public class CompanyController {
 
     // DELETE company
     @DeleteMapping("/{id}")
-    public void deleteCompany(@PathVariable Long id) {
+    public void deleteCompany(@PathVariable Integer id) {
         companyRepository.deleteById(id);
     }
 }

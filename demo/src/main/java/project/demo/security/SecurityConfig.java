@@ -1,4 +1,4 @@
-package project.demo;
+package project.demo.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,20 +26,20 @@ public class SecurityConfig{
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
         http
-            .csrf(csrf -> csrf.disable())
-            .authorizeHttpRequests(auth -> 
-                auth.requestMatchers("/login").permitAll()
-                .requestMatchers("/supervisor/").hasRole("/SUPERVISOR")
-                .anyRequest().authenticated()
-            )
-            .formLogin(form -> 
-                form.loginPage("/login")
-                .loginProcessingUrl("/login")
-                .usernameParameter("Email")
-                .passwordParameter("password")
-                .defaultSuccessUrl("/home", true)
-            );
+            // .authorizeHttpRequests(auth -> 
+            //     auth.requestMatchers("/login").permitAll()
+            //     .requestMatchers("/supervisor/").hasRole("/SUPERVISOR")
+            //     .anyRequest().authenticated()
+            // )
+            // .formLogin(form -> 
+            //     form.loginPage("/login")
+            //     .loginProcessingUrl("/login")
+            //     .usernameParameter("Email")
+            //     .passwordParameter("password")
+            //     .defaultSuccessUrl("/home", true)
+            // )
+            .formLogin(form -> form.disable())
+            .httpBasic(basic -> basic.disable());
         return http.build();
-            
     }
 }

@@ -1,7 +1,6 @@
 package project.demo.controller;
 
 import project.demo.entity.Application;
-import project.demo.enums.ApplicationStatus;
 import project.demo.service.ApplicationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,7 +12,6 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/applications")
-@CrossOrigin(maxAge = 3600)
 public class ApplicationController {
     
     @Autowired
@@ -28,7 +26,7 @@ public class ApplicationController {
     
     // Get application by ID
     @GetMapping("/{id}")
-    public ResponseEntity<Application> getApplicationById(@PathVariable Long id) {
+    public ResponseEntity<Application> getApplicationById(@PathVariable Integer id) {
         Optional<Application> application = applicationService.getApplicationById(id);
         return application.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
@@ -43,28 +41,21 @@ public class ApplicationController {
     
     // Get applications by student ID
     @GetMapping("/student/{studentId}")
-    public ResponseEntity<List<Application>> getApplicationsByStudent(@PathVariable Long studentId) {
+    public ResponseEntity<List<Application>> getApplicationsByStudent(@PathVariable Integer studentId) {
         List<Application> applications = applicationService.getApplicationsByStudent(studentId);
         return ResponseEntity.ok(applications);
     }
     
     // Get applications by company ID
     @GetMapping("/company/{companyId}")
-    public ResponseEntity<List<Application>> getApplicationsByCompany(@PathVariable Long companyId) {
+    public ResponseEntity<List<Application>> getApplicationsByCompany(@PathVariable Integer companyId) {
         List<Application> applications = applicationService.getApplicationsByCompany(companyId);
-        return ResponseEntity.ok(applications);
-    }
-    
-    // Get applications by status
-    @GetMapping("/status/{status}")
-    public ResponseEntity<List<Application>> getApplicationsByStatus(@PathVariable ApplicationStatus status) {
-        List<Application> applications = applicationService.getApplicationsByStatus(status);
         return ResponseEntity.ok(applications);
     }
     
     // Update application
     @PutMapping("/{id}")
-    public ResponseEntity<Application> updateApplication(@PathVariable Long id, @RequestBody Application applicationDetails) {
+    public ResponseEntity<Application> updateApplication(@PathVariable Integer id, @RequestBody Application applicationDetails) {
         Application updatedApplication = applicationService.updateApplication(id, applicationDetails);
         if (updatedApplication != null) {
             return ResponseEntity.ok(updatedApplication);
@@ -74,14 +65,14 @@ public class ApplicationController {
     
     // Delete application
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteApplication(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteApplication(@PathVariable Integer id) {
         applicationService.deleteApplication(id);
         return ResponseEntity.noContent().build();
     }
     
     // Approve application
     @PutMapping("/{id}/approve")
-    public ResponseEntity<Application> approveApplication(@PathVariable Long id) {
+    public ResponseEntity<Application> approveApplication(@PathVariable Integer id) {
         Application approvedApplication = applicationService.approveApplication(id);
         if (approvedApplication != null) {
             return ResponseEntity.ok(approvedApplication);
@@ -91,7 +82,7 @@ public class ApplicationController {
     
     // Reject application
     @PutMapping("/{id}/reject")
-    public ResponseEntity<Application> rejectApplication(@PathVariable Long id) {
+    public ResponseEntity<Application> rejectApplication(@PathVariable Integer id) {
         Application rejectedApplication = applicationService.rejectApplication(id);
         if (rejectedApplication != null) {
             return ResponseEntity.ok(rejectedApplication);

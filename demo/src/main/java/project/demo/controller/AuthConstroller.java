@@ -1,15 +1,15 @@
-package project.demo.controller;
+// package project.demo.controller;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
+// import org.springframework.stereotype.Controller;
+// import org.springframework.web.bind.annotation.GetMapping;
 
 
-@Controller
-public class AuthConstroller {
+// @Controller
+// public class AuthConstroller {
 
-    @GetMapping("/login")
-    public String loginPage() {
-        return "/login";
-    }
+//     @GetMapping("/login")
+//     public String loginPage() {
+//         return "/login";
+//     }
     
-}
+// }
