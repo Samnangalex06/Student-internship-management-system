@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <body>
+    <div th:fragment="adminNav">
+      <div style="padding: 12px; border-bottom: 1px solid #ddd">
+        <b>SIMS - Admin</b> | <a th:href="@{/admin/dashboard}">Dashboard</a> |
+        <a th:href="@{/admin/students}">Students</a> |
+        <a th:href="@{/admin/supervisors}">Supervisors</a> |
+        <a th:href="@{/admin/companies}">Companies</a> |
+        <a th:href="@{/admin/assign-supervisor}">Assign Supervisor</a> |
+        <a th:href="@{/admin/approvals}">Approvals</a> |
+        <a th:href="@{/logout}">Logout</a>
+      </div>
+    </div>
+  </body>
+</html>

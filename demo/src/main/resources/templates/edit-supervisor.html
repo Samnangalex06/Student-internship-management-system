@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Edit Supervisor</title>
+  </head>
+  <body>
+    <h2>Edit Supervisor</h2>
+
+    <div th:if="${error != null}" style="color: red">
+      <p th:text="${error}"></p>
+    </div>
+
+    <form
+      th:action="@{/admin/supervisors/edit/{id}(id=${supervisor.id})}"
+      method="post"
+      th:object="${supervisor}"
+    >
+      <div>
+        <label>ID</label><br />
+        <input type="text" th:value="${supervisor.id}" readonly />
+      </div>
+
+      <br />
+
+      <div>
+        <label>Full Name</label><br />
+        <input type="text" th:field="*{fullName}" required />
+      </div>
+
+      <br />
+
+      <div>
+        <label>Email</label><br />
+        <input type="email" th:field="*{email}" required />
+      </div>
+
+      <br />
+
+      <button type="submit">Update</button>
+      <a th:href="@{/admin/supervisors}">Cancel</a>
+    </form>
+  </body>
+</html>
