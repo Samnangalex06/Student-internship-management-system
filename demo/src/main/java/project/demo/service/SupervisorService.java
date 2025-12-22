@@ -1,5 +1,6 @@
 package project.demo.service;
 
+<<<<<<< HEAD
 import org.springframework.stereotype.Service;
 import project.demo.entity.Supervisor;
 import project.demo.repository.SupervisorRepository;
@@ -33,4 +34,20 @@ public class SupervisorService {
     }
 
     public void delete(Long id) { repo.deleteById(id); }
+=======
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import jakarta.persistence.criteria.CriteriaBuilder.In;
+import project.demo.repository.SupervisorRepository;
+
+@Service
+public class SupervisorService {
+    @Autowired
+    private SupervisorRepository sup_Repository;
+
+    public boolean isSupervisor(Integer userId){
+        return sup_Repository.existsByUserId(userId);
+    }
+>>>>>>> origin/MoniRom
 }
