@@ -16,8 +16,8 @@ public class ApplicationService {
     
     // Create a new application
     public Application createApplication(Application application) {
-        application.setCreatedAt(LocalDateTime.now());
-        application.setUpdatedAt(LocalDateTime.now());
+        // Lifecycle methods in your Entity (@PrePersist) usually handle this,
+        // but keeping it here is fine as a backup.
         return applicationRepository.save(application);
     }
     
@@ -43,17 +43,15 @@ public class ApplicationService {
 
     // Update application
     public Application updateApplication(Integer id, Application applicationDetails) {
-        Optional<Application> application = applicationRepository.findById(id);
-        if (application.isPresent()) {
-            Application app = application.get();
-            
+        return applicationRepository.findById(id).map(app -> {
             if (applicationDetails.getDescription() != null) {
                 app.setDescription(applicationDetails.getDescription());
             }
-            app.setUpdatedAt(LocalDateTime.now());
+            if (applicationDetails.getStatus() != null) {
+                app.setStatus(applicationDetails.getStatus());
+            }
             return applicationRepository.save(app);
-        }
-        return null;
+        }).orElse(null);
     }
     
     // Delete application
@@ -61,26 +59,19 @@ public class ApplicationService {
         applicationRepository.deleteById(id);
     }
     
-    // Approve application
+    // Approve application - FIXED to actually change status
     public Application approveApplication(Integer id) {
-        Optional<Application> application = applicationRepository.findById(id);
-        if (application.isPresent()) {
-            Application app = application.get();
-
-            app.setUpdatedAt(LocalDateTime.now());
+        return applicationRepository.findById(id).map(app -> {
+            app.setStatus(Application.ApplicationStatus.APPROVED);
             return applicationRepository.save(app);
-        }
-        return null;
+        }).orElse(null);
     }
     
-    // Reject application
+    // Reject application - FIXED to actually change status
     public Application rejectApplication(Integer id) {
-        Optional<Application> application = applicationRepository.findById(id);
-        if (application.isPresent()) {
-            Application app = application.get();
-            app.setUpdatedAt(LocalDateTime.now());
+        return applicationRepository.findById(id).map(app -> {
+            app.setStatus(Application.ApplicationStatus.REJECTED);
             return applicationRepository.save(app);
-        }
-        return null;
+        }).orElse(null);
     }
 }

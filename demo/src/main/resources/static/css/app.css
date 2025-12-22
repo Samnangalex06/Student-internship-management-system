@@ -88,4 +88,237 @@ a:hover {
 
 .small-muted {
   color: rgba(255, 255, 255, 0.6);
+/* ===============================
+   GLOBAL LAYOUT
+================================ */
+
+* {
+  box-sizing: border-box;
+}
+
+body.app-shell {
+  min-height: 100vh;
+  background: radial-gradient(
+      1200px 600px at 10% 10%,
+      rgba(30, 64, 175, 0.15),
+      transparent
+    ),
+    radial-gradient(
+      800px 500px at 90% 20%,
+      rgba(16, 185, 129, 0.12),
+      transparent
+    ),
+    linear-gradient(180deg, #0b1220, #05080f);
+  color: #e5e7eb;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, Ubuntu, sans-serif;
+}
+
+/* ===============================
+   NAVBAR
+================================ */
+
+.app-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 28px;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.app-nav a {
+  color: #e5e7eb;
+  text-decoration: none;
+  margin-right: 18px;
+  font-weight: 500;
+}
+
+.app-nav a:hover {
+  color: #60a5fa;
+}
+
+.brand {
+  font-weight: 700;
+  letter-spacing: 0.4px;
+}
+
+.brand .role {
+  color: #60a5fa;
+  font-weight: 600;
+  margin-left: 6px;
+}
+
+.logout {
+  color: #f87171;
+}
+
+.logout:hover {
+  color: #fca5a5;
+}
+
+/* ===============================
+   CONTENT WRAPPER
+================================ */
+
+.app-content {
+  padding: 30px 15px;
+}
+
+/* ===============================
+   GLASS CARD
+================================ */
+
+.glass {
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
+}
+
+/* ===============================
+   SOFT CARD (DASHBOARD)
+================================ */
+
+.card-soft {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.card-soft:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.35);
+}
+
+/* ===============================
+   TEXT HELPERS
+================================ */
+
+.small-muted {
+  font-size: 0.85rem;
+  color: #9ca3af;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+  color: #f9fafb;
+}
+
+/* ===============================
+   BADGES
+================================ */
+
+.badge-soft {
+  background: rgba(96, 165, 250, 0.15);
+  color: #93c5fd;
+  border: 1px solid rgba(96, 165, 250, 0.35);
+  font-weight: 500;
+}
+
+/* ===============================
+   TABLES
+================================ */
+
+.table-darkish {
+  --bs-table-bg: rgba(255, 255, 255, 0.04);
+  --bs-table-striped-bg: rgba(255, 255, 255, 0.06);
+  --bs-table-hover-bg: rgba(255, 255, 255, 0.08);
+  color: #e5e7eb;
+}
+
+.table thead th {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* ===============================
+   FORMS
+================================ */
+
+.form-control {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #f9fafb;
+}
+
+.form-control::placeholder {
+  color: #9ca3af;
+}
+
+.form-control:focus {
+  background: rgba(255, 255, 255, 0.1);
+  color: #f9fafb;
+  border-color: #60a5fa;
+  box-shadow: none;
+}
+
+/* ===============================
+   BUTTONS
+================================ */
+
+.btn-primary {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  border: none;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+}
+
+.btn-success {
+  background: linear-gradient(135deg, #10b981, #059669);
+  border: none;
+}
+
+.btn-outline-light {
+  border-color: rgba(255, 255, 255, 0.35);
+  color: #e5e7eb;
+}
+
+.btn-outline-light:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* ===============================
+   ALERTS
+================================ */
+
+.alert {
+  border-radius: 10px;
+}
+
+.alert-success {
+  background: rgba(16, 185, 129, 0.15);
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  color: #6ee7b7;
+}
+
+.alert-danger {
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  color: #fca5a5;
+}
+
+.alert-warning {
+  background: rgba(245, 158, 11, 0.15);
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  color: #fde68a;
+}
+
+/* ===============================
+   LINKS
+================================ */
+
+a {
+  color: #93c5fd;
+}
+
+a:hover {
+  color: #bfdbfe;
 }
