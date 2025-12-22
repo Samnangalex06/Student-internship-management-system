@@ -1,3 +1,4 @@
+nano .gitignore
 HELP.md
 .gradle
 build/
@@ -33,5 +34,6 @@ out/
 /nbdist/
 /.nb-gradle/
 
-### VS Code ###
+# VS Code
 .vscode/
+../.vscode/

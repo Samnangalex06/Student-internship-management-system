@@ -1,0 +1,10 @@
+<nav th:fragment="studentNav" class="app-nav">
+  <div class="nav-left">
+    <span class="brand">SIMS <span class="role">Student</span></span>
+    <a th:href="@{/student/dashboard}">Dashboard</a>
+    <a th:href="@{/student/applications}">Applications</a>
+    <a th:href="@{/student/evaluations}">Evaluations</a>
+    <a th:href="@{/student/profile}">Profile</a>
+  </div>
+  <a class="logout" th:href="@{/logout}">Logout</a>
+</nav>
