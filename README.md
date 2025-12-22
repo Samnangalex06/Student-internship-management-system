@@ -1,1 +1,0 @@
-# Student-internship-management-system
