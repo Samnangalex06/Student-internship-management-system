@@ -1,16 +1,88 @@
 package project.demo.controller;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
+import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+import project.demo.entity.Supervisor;
+import project.demo.Model.SupervisorDTO;
+import project.demo.repository.SupervisorRepository;
 
+import java.util.List;
+import java.util.stream.Collectors;
 
-
-@Controller
+@RestController
+@RequestMapping("/api/supervisors")
 public class SupervisorController {
-	@GetMapping("/viwe_Applications_Status")
-	public String viwe_Applications_Status(Model model) {
-		return "here you are!";
-	}
-	
+
+    @Autowired
+    private SupervisorRepository supervisorRepository;
+
+    // --- CREATE supervisor ---
+    @PostMapping
+    public SupervisorDTO createSupervisor(@Valid @RequestBody SupervisorDTO dto) {
+        if (supervisorRepository.existsByUserId(dto.getUserId())) {
+            throw new RuntimeException("User is already a supervisor");
+        }
+
+        Supervisor supervisor = new Supervisor();
+        supervisor.setUserId(dto.getUserId());
+        supervisor.setFullName(dto.getFullName());
+        supervisor.setEmail(dto.getEmail());
+        supervisor.setPhoneNumber(dto.getPhone());
+        supervisor.setDepartment(dto.getDepartment());
+
+        Supervisor saved = supervisorRepository.save(supervisor);
+
+        return toDTO(saved);
+    }
+
+    // --- READ all supervisors ---
+    @GetMapping
+    public List<SupervisorDTO> getAllSupervisors() {
+        return supervisorRepository.findAll()
+                .stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    // --- READ supervisor by ID ---
+    @GetMapping("/{id}")
+    public SupervisorDTO getSupervisor(@PathVariable Integer id) {
+        Supervisor sup = supervisorRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Supervisor not found"));
+        return toDTO(sup);
+    }
+
+    // --- UPDATE supervisor ---
+    @PutMapping("/{id}")
+    public SupervisorDTO updateSupervisor(@PathVariable Integer id, @Valid @RequestBody SupervisorDTO dto) {
+        Supervisor sup = supervisorRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Supervisor not found"));
+
+        sup.setFullName(dto.getFullName());
+        sup.setEmail(dto.getEmail());
+        sup.setPhoneNumber(dto.getPhone());
+        sup.setDepartment(dto.getDepartment());
+
+        Supervisor updated = supervisorRepository.save(sup);
+        return toDTO(updated);
+    }
+
+    // --- DELETE supervisor ---
+    @DeleteMapping("/{id}")
+    public String deleteSupervisor(@PathVariable Integer id) {
+        supervisorRepository.deleteById(id);
+        return "Supervisor deleted successfully";
+    }
+
+    // --- Helper method to convert Entity → DTO ---
+    private SupervisorDTO toDTO(Supervisor supervisor) {
+        SupervisorDTO dto = new SupervisorDTO();
+        dto.setUserId(supervisor.getUserId());
+        dto.setFullName(supervisor.getFullName());
+        dto.setEmail(supervisor.getEmail());
+        dto.setPhone(supervisor.getPhoneNumber());
+        dto.setDepartment(supervisor.getDepartment());
+        return dto;
+    }
 }
