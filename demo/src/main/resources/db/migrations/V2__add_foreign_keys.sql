@@ -33,7 +33,6 @@ on update cascade on delete restrict;
 alter table document 
 add constraint document_internship_app_id foreign key (internship_app_id) references internship_application(id)
 on update cascade on delete restrict;
-
 alter table evaluations 
 add constraint evalutions_supervisor_id foreign key(supervisor_id) references supervisors(id)
 on update cascade on delete restrict;
