@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Admin Dashboard</title>
+  </head>
+  <body>
+    <div th:replace="fragments/admin-nav :: adminNav"></div>
+
+    <div style="padding: 16px">
+      <h2>Admin Dashboard</h2>
+
+      <!-- Stats cards -->
+      <div style="display: flex; gap: 12px; margin-top: 12px">
+        <div style="border: 1px solid #ddd; padding: 12px; width: 200px">
+          <div><b>Students</b></div>
+          <div style="font-size: 28px" th:text="${studentCount}">0</div>
+        </div>
+
+        <div style="border: 1px solid #ddd; padding: 12px; width: 200px">
+          <div><b>Supervisors</b></div>
+          <div style="font-size: 28px" th:text="${supervisorCount}">0</div>
+        </div>
+
+        <div style="border: 1px solid #ddd; padding: 12px; width: 200px">
+          <div><b>Applications</b></div>
+          <div style="font-size: 28px" th:text="${applicationCount}">0</div>
+        </div>
+      </div>
+
+      <hr style="margin: 18px 0" />
+
+      <!-- Recent updates/logs -->
+      <h3>Recent Updates / Logs</h3>
+
+      <div th:if="${recentLogs == null || #lists.isEmpty(recentLogs)}">
+        <p>No logs yet.</p>
+      </div>
+
+      <table
+        th:if="${recentLogs != null && !#lists.isEmpty(recentLogs)}"
+        border="1"
+        cellpadding="8"
+        cellspacing="0"
+      >
+        <thead>
+          <tr>
+            <th>Time</th>
+            <th>Action</th>
+            <th>Actor</th>
+            <th>Target</th>
+            <th>Detail</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="l : ${recentLogs}">
+            <td th:text="${l.timestamp}">time</td>
+            <td th:text="${l.action}">action</td>
+            <td th:text="${l.actorUsername}">actor</td>
+            <td th:text="${l.targetType} + ' #' + ${l.targetId}">target</td>
+            <td th:text="${l.detail}">detail</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </body>
+</html>

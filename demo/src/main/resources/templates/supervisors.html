@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Supervisors</title>
+  </head>
+  <body>
+    <h2>Supervisors Management</h2>
+
+    <div>
+      <a th:href="@{/admin/supervisors/create}">+ Add Supervisor</a>
+    </div>
+
+    <br />
+
+    <div th:if="${error != null}" style="color: red">
+      <p th:text="${error}"></p>
+    </div>
+
+    <table border="1" cellpadding="8" cellspacing="0">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Full Name</th>
+          <th>Email</th>
+          <th style="width: 220px">Actions</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr th:each="s : ${supervisors}">
+          <td th:text="${s.id}">1</td>
+          <td th:text="${s.fullName}">Name</td>
+          <td th:text="${s.email}">email</td>
+          <td>
+            <a th:href="@{/admin/supervisors/edit/{id}(id=${s.id})}">Edit</a>
+
+            <form
+              th:action="@{/admin/supervisors/delete/{id}(id=${s.id})}"
+              method="post"
+              style="display: inline"
+            >
+              <button
+                type="submit"
+                onclick="return confirm('Delete this supervisor?')"
+              >
+                Delete
+              </button>
+            </form>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <br />
+    <a th:href="@{/admin/dashboard}">← Back to Dashboard</a>
+  </body>
+</html>

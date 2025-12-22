@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Approvals</title>
+  </head>
+  <body>
+    <div th:replace="fragments/admin-nav :: adminNav"></div>
+
+    <div style="padding: 16px">
+      <h2>Approval Module</h2>
+      <p>Pending applications (UI). Backend will populate this later.</p>
+
+      <table border="1" cellpadding="8" cellspacing="0">
+        <thead>
+          <tr>
+            <th>Application ID</th>
+            <th>Student</th>
+            <th>Company</th>
+            <th>Status</th>
+            <th>Comment (optional)</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td>Student Name</td>
+            <td>Company Name</td>
+            <td>PENDING</td>
+            <td><input placeholder="Reason/comment" /></td>
+            <td>
+              <button>Approve</button>
+              <button>Reject</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </body>
+</html>
