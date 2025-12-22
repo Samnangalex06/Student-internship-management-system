@@ -3,39 +3,66 @@
   <head>
     <meta charset="UTF-8" />
     <title>Approvals</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link th:href="@{/css/app.css}" rel="stylesheet" />
   </head>
-  <body>
+  <body class="app-shell">
     <div th:replace="fragments/admin-nav :: adminNav"></div>
 
-    <div style="padding: 16px">
-      <h2>Approval Module</h2>
-      <p>Pending applications (UI). Backend will populate this later.</p>
+    <div class="container app-content">
+      <div class="glass p-4">
+        <div
+          class="d-flex justify-content-between align-items-center flex-wrap gap-2"
+        >
+          <div>
+            <h3 class="mb-1">Approval Module</h3>
+            <div class="small-muted">
+              Approve / reject pending applications (UI)
+            </div>
+          </div>
+        </div>
 
-      <table border="1" cellpadding="8" cellspacing="0">
-        <thead>
-          <tr>
-            <th>Application ID</th>
-            <th>Student</th>
-            <th>Company</th>
-            <th>Status</th>
-            <th>Comment (optional)</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>1</td>
-            <td>Student Name</td>
-            <td>Company Name</td>
-            <td>PENDING</td>
-            <td><input placeholder="Reason/comment" /></td>
-            <td>
-              <button>Approve</button>
-              <button>Reject</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+        <div class="table-responsive mt-3">
+          <table
+            class="table table-dark table-darkish table-striped table-hover align-middle"
+          >
+            <thead>
+              <tr>
+                <th>Application ID</th>
+                <th>Student</th>
+                <th>Company</th>
+                <th>Status</th>
+                <th>Comment</th>
+                <th style="width: 210px">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>1</td>
+                <td>Student Name</td>
+                <td>Company Name</td>
+                <td><span class="badge badge-soft">PENDING</span></td>
+                <td>
+                  <input class="form-control" placeholder="Reason/comment" />
+                </td>
+                <td class="d-flex gap-2">
+                  <button class="btn btn-success btn-sm">Approve</button>
+                  <button class="btn btn-danger btn-sm">Reject</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="small-muted mt-2">
+          Backend will populate real data later.
+        </div>
+      </div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   </body>
 </html>

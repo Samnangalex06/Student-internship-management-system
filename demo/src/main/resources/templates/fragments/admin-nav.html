@@ -1,16 +1,54 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
   <body>
-    <div th:fragment="adminNav">
-      <div style="padding: 12px; border-bottom: 1px solid #ddd">
-        <b>SIMS - Admin</b> | <a th:href="@{/admin/dashboard}">Dashboard</a> |
-        <a th:href="@{/admin/students}">Students</a> |
-        <a th:href="@{/admin/supervisors}">Supervisors</a> |
-        <a th:href="@{/admin/companies}">Companies</a> |
-        <a th:href="@{/admin/assign-supervisor}">Assign Supervisor</a> |
-        <a th:href="@{/admin/approvals}">Approvals</a> |
-        <a th:href="@{/logout}">Logout</a>
+    <nav th:fragment="adminNav" class="navbar navbar-expand-lg navbar-dark">
+      <div class="container-fluid">
+        <a class="navbar-brand fw-semibold" th:href="@{/admin/dashboard}">
+          SIMS <span class="badge badge-soft ms-2">Admin</span>
+        </a>
+
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#nav"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="nav">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a class="nav-link" th:href="@{/admin/dashboard}">Dashboard</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" th:href="@{/admin/students}">Students</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" th:href="@{/admin/supervisors}"
+                >Supervisors</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" th:href="@{/admin/companies}">Companies</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" th:href="@{/admin/assign-supervisor}"
+                >Assign</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" th:href="@{/admin/approvals}">Approvals</a>
+            </li>
+          </ul>
+
+          <div class="d-flex gap-2">
+            <a class="btn btn-outline-light btn-sm" th:href="@{/logout}"
+              >Logout</a
+            >
+          </div>
+        </div>
       </div>
-    </div>
+    </nav>
   </body>
 </html>

@@ -1,0 +1,91 @@
+:root {
+  --app-bg: #0b1220;
+  --card-bg: #0f1b34;
+  --card-border: rgba(255, 255, 255, 0.08);
+}
+
+body {
+  background: radial-gradient(
+      1200px 600px at 10% 10%,
+      rgba(99, 102, 241, 0.25),
+      transparent 50%
+    ),
+    radial-gradient(
+      900px 500px at 90% 20%,
+      rgba(16, 185, 129, 0.18),
+      transparent 45%
+    ),
+    radial-gradient(
+      900px 500px at 50% 90%,
+      rgba(59, 130, 246, 0.18),
+      transparent 50%
+    ),
+    var(--app-bg);
+  color: rgba(255, 255, 255, 0.92);
+}
+
+a {
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+.app-shell {
+  min-height: 100vh;
+}
+.app-content {
+  padding: 24px;
+}
+
+.glass {
+  background: rgba(15, 27, 52, 0.75);
+  border: 1px solid var(--card-border);
+  backdrop-filter: blur(10px);
+  border-radius: 18px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+}
+
+.card-soft {
+  background: rgba(15, 27, 52, 0.6);
+  border: 1px solid var(--card-border);
+  border-radius: 16px;
+}
+
+.table-darkish {
+  --bs-table-bg: transparent;
+  --bs-table-striped-bg: rgba(255, 255, 255, 0.03);
+  --bs-table-hover-bg: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.form-control,
+.form-select {
+  background-color: rgba(255, 255, 255, 0.06) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  color: rgba(255, 255, 255, 0.92) !important;
+}
+.form-control::placeholder {
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #6366f1, #3b82f6);
+  border: 0;
+}
+.btn-success {
+  background: linear-gradient(135deg, #10b981, #22c55e);
+  border: 0;
+}
+.btn-outline-light {
+  border-color: rgba(255, 255, 255, 0.25);
+}
+.badge-soft {
+  background: rgba(99, 102, 241, 0.18);
+  border: 1px solid rgba(99, 102, 241, 0.35);
+  color: #c7d2fe;
+}
+
+.small-muted {
+  color: rgba(255, 255, 255, 0.6);
+}

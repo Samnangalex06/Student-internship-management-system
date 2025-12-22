@@ -3,56 +3,89 @@
   <head>
     <meta charset="UTF-8" />
     <title>Supervisors</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link th:href="@{/css/app.css}" rel="stylesheet" />
   </head>
-  <body>
-    <h2>Supervisors Management</h2>
+  <body class="app-shell">
+    <div th:replace="fragments/admin-nav :: adminNav"></div>
 
-    <div>
-      <a th:href="@{/admin/supervisors/create}">+ Add Supervisor</a>
+    <div class="container app-content">
+      <div class="glass p-4">
+        <div
+          class="d-flex justify-content-between align-items-center flex-wrap gap-2"
+        >
+          <div>
+            <h3 class="mb-1">Supervisors</h3>
+            <div class="small-muted">Manage supervisors records</div>
+          </div>
+          <a class="btn btn-primary" th:href="@{/admin/supervisors/create}"
+            >+ Add Supervisor</a
+          >
+        </div>
+
+        <div
+          class="alert alert-danger mt-3"
+          th:if="${error != null}"
+          th:text="${error}"
+          style="
+            background: rgba(220, 53, 69, 0.12);
+            border: 1px solid rgba(220, 53, 69, 0.25);
+            color: #ffd1d6;
+          "
+        ></div>
+
+        <div class="table-responsive mt-3">
+          <table
+            class="table table-dark table-darkish table-striped table-hover align-middle"
+          >
+            <thead>
+              <tr>
+                <th style="width: 90px">ID</th>
+                <th>Full Name</th>
+                <th>Email</th>
+                <th style="width: 220px">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:each="s : ${supervisors}">
+                <td th:text="${s.id}">1</td>
+                <td th:text="${s.fullName}">Name</td>
+                <td th:text="${s.email}">email</td>
+                <td class="d-flex gap-2">
+                  <a
+                    class="btn btn-outline-light btn-sm"
+                    th:href="@{/admin/supervisors/edit/{id}(id=${s.id})}"
+                    >Edit</a
+                  >
+
+                  <form
+                    th:action="@{/admin/supervisors/delete/{id}(id=${s.id})}"
+                    method="post"
+                  >
+                    <button
+                      class="btn btn-danger btn-sm"
+                      type="submit"
+                      onclick="return confirm('Delete this supervisor?')"
+                    >
+                      Delete
+                    </button>
+                  </form>
+                </td>
+              </tr>
+              <tr th:if="${supervisors == null || #lists.isEmpty(supervisors)}">
+                <td colspan="4" class="text-center small-muted py-4">
+                  No supervisors yet.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
 
-    <br />
-
-    <div th:if="${error != null}" style="color: red">
-      <p th:text="${error}"></p>
-    </div>
-
-    <table border="1" cellpadding="8" cellspacing="0">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Full Name</th>
-          <th>Email</th>
-          <th style="width: 220px">Actions</th>
-        </tr>
-      </thead>
-
-      <tbody>
-        <tr th:each="s : ${supervisors}">
-          <td th:text="${s.id}">1</td>
-          <td th:text="${s.fullName}">Name</td>
-          <td th:text="${s.email}">email</td>
-          <td>
-            <a th:href="@{/admin/supervisors/edit/{id}(id=${s.id})}">Edit</a>
-
-            <form
-              th:action="@{/admin/supervisors/delete/{id}(id=${s.id})}"
-              method="post"
-              style="display: inline"
-            >
-              <button
-                type="submit"
-                onclick="return confirm('Delete this supervisor?')"
-              >
-                Delete
-              </button>
-            </form>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-
-    <br />
-    <a th:href="@{/admin/dashboard}">← Back to Dashboard</a>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   </body>
 </html>
