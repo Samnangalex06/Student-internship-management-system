@@ -17,19 +17,16 @@ public class CompanyController {
         this.companyRepository = companyRepository;
     }
 
-    // CREATE company
     @PostMapping
     public Company createCompany(@RequestBody Company company) {
         return companyRepository.save(company);
     }
 
-    // VIEW all companies
     @GetMapping
     public List<Company> getAllCompanies() {
         return companyRepository.findAll();
     }
 
-    // UPDATE company
     @PutMapping("/{id}")
     public Company updateCompany(@PathVariable int id,
                                  @RequestBody Company company) {
