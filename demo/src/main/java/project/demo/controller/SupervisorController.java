@@ -17,17 +17,6 @@
 
 package project.demo.controller;
 
-<<<<<<< HEAD
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-
-@Controller
-public class SupervisorController {
-
-    @GetMapping("/viwe_Applications_Status")
-    public String viweApplicationsStatus() {
-        return "supervisor/applications-status"; // create this template later
-=======
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -112,6 +101,5 @@ public class SupervisorController {
         dto.setPhone(supervisor.getPhoneNumber());
         dto.setDepartment(supervisor.getDepartment());
         return dto;
->>>>>>> origin/MoniRom
     }
 }
