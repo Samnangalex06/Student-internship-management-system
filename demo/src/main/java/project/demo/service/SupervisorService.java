@@ -14,4 +14,5 @@ public class SupervisorService {
     public boolean isSupervisor(Integer userId){
         return sup_Repository.existsByUserId(userId);
     }
+
 }

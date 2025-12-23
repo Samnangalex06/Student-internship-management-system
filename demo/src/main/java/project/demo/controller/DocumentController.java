@@ -24,7 +24,7 @@ public class DocumentController {
     @PostMapping("/upload")
     public ResponseEntity<?> uploadDocument(
             @RequestParam("file") MultipartFile file,
-            @RequestParam("userId") Long userId
+            @RequestParam("userId") Integer userId
     ) throws IOException {
 
         if (file.isEmpty()) {
@@ -47,7 +47,7 @@ public class DocumentController {
         Document document = new Document();
         document.setFileName(file.getOriginalFilename());
         document.setFilePath(filePath.toString());
-        document.setFileType(file.getContentType());
+        // document.setFileType(file.getContentType());
         document.setUserId(userId);
 
         documentRepository.save(document);

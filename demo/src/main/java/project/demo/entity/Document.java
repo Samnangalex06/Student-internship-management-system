@@ -3,22 +3,23 @@ package project.demo.entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "documents")
+@Table(name = "document")
 public class Document {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
+    
     private String fileName;
     private String filePath;
-    private String fileType;
 
-    @Column(name = "user_id")
-    private Long userId;
+
+    @Column(name = "student_id")
+    private Integer userId;
 
     // getters & setters
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
@@ -38,19 +39,13 @@ public class Document {
         this.filePath = filePath;
     }
 
-    public String getFileType() {
-        return fileType;
-    }
 
-    public void setFileType(String fileType) {
-        this.fileType = fileType;
-    }
 
-    public Long getUserId() {
+    public Integer getUserId() {
         return userId;
     }
 
-    public void setUserId(Long userId) {
+    public void setUserId(Integer userId) {
         this.userId = userId;
     }
 }
