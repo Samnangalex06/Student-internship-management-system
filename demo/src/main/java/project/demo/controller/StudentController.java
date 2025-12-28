@@ -5,8 +5,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+// import org.springframework.security.core.Authentication;
+// import org.springframework.security.core.context.SecurityContextHolder;
 
 // Removed the generic Application import to prevent naming conflicts
 import project.demo.entity.Student;
@@ -40,8 +40,8 @@ public class StudentController {
 
     @GetMapping("/dashboard")
     public String dashboard(Model model) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String email = auth != null ? auth.getName() : null;
+        //Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        //String email = auth != null ? auth.getName() : null;
 
         if (email != null) {
             Optional<User> userOpt = userRepository.findUsersByEmail(email);

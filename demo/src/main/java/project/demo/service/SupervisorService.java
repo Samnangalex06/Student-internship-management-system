@@ -3,7 +3,6 @@ package project.demo.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import jakarta.persistence.criteria.CriteriaBuilder.In;
 import project.demo.repository.SupervisorRepository;
 
 @Service
