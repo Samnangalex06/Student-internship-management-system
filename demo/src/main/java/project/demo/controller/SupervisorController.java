@@ -40,6 +40,16 @@ public class SupervisorController {
                 .map(this::toDTO)
                 .collect(Collectors.toList());
     }
+    private SupervisorDTO toDTO(Supervisor su){
+        return new SupervisorDTO(
+            su.getId(),
+            su.getUserId(),
+            su.getFullName(),
+            su.getEmail(),
+            su.getPhoneNumber(),
+            su.getDepartment()
+        );
+    }
 
     // --- READ supervisor by ID ---
     @GetMapping("/{id}")
@@ -71,14 +81,5 @@ public class SupervisorController {
         return "Supervisor deleted successfully";
     }
 
-    // --- Helper method to convert Entity → DTO ---
-    private SupervisorDTO toDTO(Supervisor supervisor) {
-        SupervisorDTO dto = new SupervisorDTO();
-        dto.setUserId(supervisor.getUserId());
-        dto.setFullName(supervisor.getFullName());
-        dto.setEmail(supervisor.getEmail());
-        dto.setPhone(supervisor.getPhoneNumber());
-        dto.setDepartment(supervisor.getDepartment());
-        return dto;
-    }
+    
 }

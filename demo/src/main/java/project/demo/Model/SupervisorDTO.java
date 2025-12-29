@@ -15,7 +15,7 @@ public class SupervisorDTO {
     @Email(message = "Email must be valid")
     private String email;
 
-    private Integer phone;
+    private Integer phoneNumber;
 
     @NotBlank(message = "Department is required")
     private String department;
@@ -23,11 +23,12 @@ public class SupervisorDTO {
     // --- Constructors ---
     public SupervisorDTO() {}
 
-    public SupervisorDTO(Integer userId, String fullName, String email, Integer phone, String department) {
+    public SupervisorDTO(Integer id,Integer userId, String fullName, String email, Integer phone, String department) {
+        this.id=id;
         this.userId = userId;
         this.fullName = fullName;
         this.email = email;
-        this.phone = phone;
+        this.phoneNumber = phone;
         this.department = department;
     }
 
@@ -44,8 +45,8 @@ public class SupervisorDTO {
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
 
-    public Integer getPhone() { return phone; }
-    public void setPhone(Integer phone) { this.phone = phone; }
+    public Integer getPhone() { return phoneNumber; }
+    public void setPhone(Integer phone) { this.phoneNumber = phone; }
 
     public String getDepartment() { return department; }
     public void setDepartment(String department) { this.department = department; }
