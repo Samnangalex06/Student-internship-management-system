@@ -17,7 +17,6 @@ public class SupervisorController {
     @Autowired
     private SupervisorRepository supervisorRepository;
 
-    // --- CREATE supervisor ---
     @PostMapping
     public SupervisorDTO createSupervisor(@Valid @RequestBody SupervisorDTO dto) {
         if (supervisorRepository.existsByUserId(dto.getUserId())) {

@@ -28,7 +28,7 @@ public class User {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
     @JsonIgnore
     private Set<UserRole> userRoles = new HashSet<>();
 
