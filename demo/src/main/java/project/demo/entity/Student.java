@@ -28,6 +28,8 @@ public class Student {
     @JoinColumn(name = "user_id")
     private User userId;
 
+    
+
     public void student(){}
 
     public Integer getId(){
