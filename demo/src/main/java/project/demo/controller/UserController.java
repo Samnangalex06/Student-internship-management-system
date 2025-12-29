@@ -19,7 +19,6 @@ public class UserController {
 
         User user = new User();
         user.setEmail(request.getEmail());
-        user.setUsername(request.getUsername());
         user.setPassword(request.getPassword());
 
         return userService.createUserWithRole(user, request.getRoleName());
@@ -29,5 +28,4 @@ public class UserController {
     public List<User> getAllUsers(){
         return userService.getAllUsers();
     }
-
 }

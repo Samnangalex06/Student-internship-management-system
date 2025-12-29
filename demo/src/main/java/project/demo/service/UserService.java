@@ -3,8 +3,6 @@ package project.demo.service;
 
 import project.demo.repository.UserRepository;
 import org.springframework.stereotype.Service;
-
-import jakarta.annotation.PostConstruct;
 import project.demo.entity.User;
 import project.demo.entity.UserRole;
 import project.demo.entity.UserRoleId;
@@ -12,8 +10,6 @@ import project.demo.enums.RoleName;
 import project.demo.entity.Role;
 import project.demo.repository.RoleRepository;
 import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Service
@@ -32,6 +28,10 @@ public class UserService {
     }
     public User createUserWithRole(User user, RoleName roleName) {
 
+        if(userRepository.existsByEmail(user.getEmail())){
+            throw new IllegalArgumentException("Email already exists");
+        }
+        
         Role role = roleRepository.findByRoleName(roleName)
                 .orElseThrow(() -> new RuntimeException("Role not found"));
 
@@ -41,6 +41,7 @@ public class UserService {
                 savedUser.getId(),
                 role.getId()
         );
+        
         UserRole userRole = new UserRole();
         userRole.setId(userRoleId);
         userRole.setUser(savedUser);

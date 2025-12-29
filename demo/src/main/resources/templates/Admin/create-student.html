@@ -3,14 +3,17 @@
   <head>
     <meta charset="UTF-8" />
     <title>Create Student</title>
+
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
       rel="stylesheet"
     />
     <link th:href="@{/css/app.css}" rel="stylesheet" />
   </head>
+
   <body class="app-shell">
-    <div th:replace="fragments/admin-nav :: adminNav"></div>
+    <div th:replace="~{fragments/admin-nav :: adminNav}"></div>
+
 
     <div class="container app-content">
       <div class="glass p-4" style="max-width: 720px; margin: 0 auto">
@@ -31,37 +34,74 @@
         <form
           th:action="@{/admin/students/create}"
           method="post"
-          th:object="${student}"
           class="mt-3"
         >
+
+          <!-- Full Name -->
           <div class="mb-3">
             <label class="form-label">Full Name</label>
             <input
               class="form-control"
               type="text"
-              th:field="*{fullName}"
+              th:field="${student.fullName}"
               required
-              placeholder="e.g. Sereyvath"
+
             />
           </div>
 
+          <!-- Email -->
           <div class="mb-3">
             <label class="form-label">Email</label>
             <input
               class="form-control"
               type="email"
-              th:field="*{email}"
+              th:field="${user.email}"
               required
-              placeholder="e.g. hello@gmail.com"
+
+            />
+          </div>
+
+          <!-- Password -->
+          <div class="mb-3">
+            <label class="form-label">Password</label>
+            <input
+              class="form-control"
+              type="password"
+              th:field="${user.password}"
+              required
+            />
+          </div>
+
+          <!-- Department -->
+          <div class="mb-3">
+            <label class="form-label">Department</label>
+            <input
+              class="form-control"
+              type="text"
+              th:field="${student.department}"
+              required
+            />
+          </div>
+
+          <!-- Phone Number -->
+          <div class="mb-3">
+            <label class="form-label">Phone Number</label>
+            <input
+              class="form-control"
+              type="tel"
+              th:field="${student.phoneNumber}"
+              required
+
             />
           </div>
 
           <div class="d-flex gap-2">
             <button class="btn btn-success" type="submit">Save</button>
-            <a class="btn btn-outline-light" th:href="@{/admin/students}"
-              >Cancel</a
-            >
+            <a class="btn btn-outline-light" th:href="@{/admin/students}">
+              Cancel
+            </a>
           </div>
+
         </form>
       </div>
     </div>

@@ -27,7 +27,7 @@ public class SecurityConfig {
         http
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/login").permitAll()
-                .requestMatchers("/admin/**").hasAuthority("ADMIN")
+                .requestMatchers("/Admin/**").hasAuthority("ADMIN")
                 .requestMatchers("/supervisor/**").hasAuthority("SUPERVISOR")
                 .requestMatchers("/student/**").hasAuthority("STUDENT")
                 .anyRequest().authenticated()
@@ -39,8 +39,12 @@ public class SecurityConfig {
                 .passwordParameter("password")
                 .successHandler(successHandler)
                 .permitAll()
-            );
-
+            )
+            .logout(logout -> logout
+            .logoutUrl("/logout")
+            .logoutSuccessUrl("/login?logout")
+            .invalidateHttpSession(true)
+        );
         return http.build();
     }
 }

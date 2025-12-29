@@ -27,16 +27,14 @@ public class StudentService {
     }
 
     public Student create(Student s) {
-        if (repo.existsByEmail(s.getEmail())) {
-            throw new IllegalArgumentException("Email already exists");
-        }
         return repo.save(s);
     }
 
     public Student update(Integer id, Student s) {
         Student existing = getById(id);
         existing.setFullName(s.getFullName());
-        existing.setEmail(s.getEmail());
+        existing.setDepartment(s.getDepartment());
+        existing.setPhoneNumber(s.getPhoneNumber());
         return repo.save(existing);
     }
 

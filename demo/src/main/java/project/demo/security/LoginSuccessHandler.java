@@ -21,17 +21,17 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 
         if (authentication.getAuthorities()
                 .contains(new SimpleGrantedAuthority("ADMIN"))) {
-            response.sendRedirect("/admin");
+            response.sendRedirect("/admin/dashboard");
             return;
         }
 
         if (authentication.getAuthorities()
                 .contains(new SimpleGrantedAuthority("SUPERVISOR"))) {
-            response.sendRedirect("/supervisor");
+            response.sendRedirect("/supervisor/dashboard");
             return;
         }
 
-        response.sendRedirect("/student");
+        response.sendRedirect("student/dashboard");
     }
 }
 
