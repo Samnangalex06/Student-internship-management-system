@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class AdminPagesController {
 
-    @GetMapping("/admin/dashboard")
+    @GetMapping("/admin")
     public String dashboard(Model model) {
         model.addAttribute("studentCount", 0);
         model.addAttribute("supervisorCount", 0);

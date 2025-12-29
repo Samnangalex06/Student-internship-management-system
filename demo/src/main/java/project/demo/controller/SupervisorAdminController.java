@@ -41,13 +41,13 @@
 //     }
 
 //     @GetMapping("/edit/{id}")
-//     public String editForm(@PathVariable Long id, Model model) {
+//     public String editForm(@PathVariable Integer id, Model model) {
 //         model.addAttribute("supervisor", supervisorService.getById(id));
 //         return "edit-supervisor";
 //     }
 
 //     @PostMapping("/edit/{id}")
-//     public String update(@PathVariable Long id, @ModelAttribute Supervisor supervisor, Model model) {
+//     public String update(@PathVariable Integer id, @ModelAttribute Supervisor supervisor, Model model) {
 //         try {
 //             supervisorService.update(id, supervisor);
 //             return "redirect:/admin/supervisors";
@@ -59,7 +59,7 @@
 //     }
 
 //     @PostMapping("/delete/{id}")
-//     public String delete(@PathVariable Long id) {
+//     public String delete(@PathVariable Integer id) {
 //         supervisorService.delete(id);
 //         return "redirect:/admin/supervisors";
 //     }

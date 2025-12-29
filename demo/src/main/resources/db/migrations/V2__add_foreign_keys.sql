@@ -41,4 +41,3 @@ alter table evaluations
 add constraint evalutions_internship_app_id foreign key(internship_app_id) references internship_application(id)
 on update cascade on delete restrict;
 
-

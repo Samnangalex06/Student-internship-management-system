@@ -1,20 +1,3 @@
-// package project.demo.controller;
-
-// import org.springframework.stereotype.Controller;
-// import org.springframework.ui.Model;
-// import org.springframework.web.bind.annotation.GetMapping;
-
-
-
-// @Controller
-// public class SupervisorController {
-// 	@GetMapping("/viwe_Applications_Status")
-// 	public String viwe_Applications_Status(Model model) {
-// 		return "here you are!";
-// 	}
-	
-// }
-
 package project.demo.controller;
 
 import jakarta.validation.Valid;
@@ -34,7 +17,6 @@ public class SupervisorController {
     @Autowired
     private SupervisorRepository supervisorRepository;
 
-    // --- CREATE supervisor ---
     @PostMapping
     public SupervisorDTO createSupervisor(@Valid @RequestBody SupervisorDTO dto) {
         if (supervisorRepository.existsByUserId(dto.getUserId())) {
@@ -49,11 +31,8 @@ public class SupervisorController {
         supervisor.setDepartment(dto.getDepartment());
 
         Supervisor saved = supervisorRepository.save(supervisor);
-
         return toDTO(saved);
     }
-
-    // --- READ all supervisors ---
     @GetMapping
     public List<SupervisorDTO> getAllSupervisors() {
         return supervisorRepository.findAll()

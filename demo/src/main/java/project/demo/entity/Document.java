@@ -10,13 +10,20 @@ public class Document {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    
+    @Column(name = "file_name")
     private String fileName;
+
+    @Column(name = "file_path")
     private String filePath;
 
+    
+    @ManyToOne
+    @JoinColumn(name = "student_id")
+    private Student studentId;
 
-    @Column(name = "student_id")
-    private Integer userId;
+    @ManyToOne
+    @JoinColumn(name = "internship_app_id")
+    private Application internshipAppId;
 
     // getters & setters
     public Integer getId() {
@@ -39,13 +46,17 @@ public class Document {
         this.filePath = filePath;
     }
 
-
-
-    public Integer getUserId() {
-        return userId;
+    public Student getStudentId() {
+        return studentId;
     }
 
-    public void setUserId(Integer userId) {
-        this.userId = userId;
+    public void setStudentId(Student studentId) {
+        this.studentId = studentId;
+    }
+    public Application getInternshipAppId() {
+        return internshipAppId;
+    }
+    public void setInternshipAppId(Application internshipAppId) {
+        this.internshipAppId = internshipAppId;
     }
 }
