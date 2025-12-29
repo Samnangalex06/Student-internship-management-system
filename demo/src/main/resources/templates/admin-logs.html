@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <title>Admin Logs</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}" />
+  </head>
+  <body>
+    <div th:replace="fragments/admin-nav :: adminNav"></div>
+
+    <div class="container">
+      <h2>Internship Logs</h2>
+
+      <form
+        method="get"
+        th:action="@{/admin/logs}"
+        style="display: flex; gap: 10px; flex-wrap: wrap; margin: 12px 0"
+      >
+        <div>
+          <label>Start Date</label><br />
+          <input type="date" name="startDate" th:value="${startDate}" />
+        </div>
+
+        <div>
+          <label>End Date</label><br />
+          <input type="date" name="endDate" th:value="${endDate}" />
+        </div>
+
+        <div>
+          <label>Action</label><br />
+          <input
+            type="text"
+            name="action"
+            placeholder="e.g. APPROVE"
+            th:value="${action}"
+          />
+        </div>
+
+        <div>
+          <label>Performed By</label><br />
+          <input
+            type="text"
+            name="performedBy"
+            placeholder="username/email"
+            th:value="${performedBy}"
+          />
+        </div>
+
+        <div style="display: flex; align-items: end; gap: 8px">
+          <button type="submit">Filter</button>
+          <a th:href="@{/admin/logs}">Reset</a>
+        </div>
+      </form>
+
+      <table border="1" cellpadding="8" cellspacing="0" width="100%">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Date</th>
+            <th>Action</th>
+            <th>Entity</th>
+            <th>Entity ID</th>
+            <th>Description</th>
+            <th>By</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:if="${#lists.isEmpty(logs)}">
+            <td colspan="7" style="text-align: center">No logs found</td>
+          </tr>
+
+          <tr th:each="log, i : ${logs}">
+            <td th:text="${i.index + 1}"></td>
+            <td th:text="${log.createdAt}"></td>
+            <td th:text="${log.action}"></td>
+            <td th:text="${log.entityType}"></td>
+            <td th:text="${log.entityId}"></td>
+            <td th:text="${log.description}"></td>
+            <td th:text="${log.performedBy}"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </body>
+</html>

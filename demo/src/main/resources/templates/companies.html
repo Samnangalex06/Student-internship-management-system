@@ -1,0 +1,24 @@
+<h2>Companies</h2>
+<a href="/admin/companies/create">Add Company</a>
+
+<table border="1">
+  <tr>
+    <th>Name</th>
+    <th>Phone</th>
+    <th>Action</th>
+  </tr>
+
+  <tr th:each="c : ${companies}">
+    <td th:text="${c.name}"></td>
+    <td th:text="${c.phoneNumber}"></td>
+    <td>
+      <a th:href="@{/admin/companies/edit/{id}(id=${c.id})}">Edit</a>
+      <form
+        th:action="@{/admin/companies/delete/{id}(id=${c.id})}"
+        method="post"
+      >
+        <button type="submit">Delete</button>
+      </form>
+    </td>
+  </tr>
+</table>

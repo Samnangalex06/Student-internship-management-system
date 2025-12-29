@@ -10,4 +10,6 @@ import project.demo.entity.Student;
 
 public interface StudentRepository extends JpaRepository<Student, Integer>{
     Optional<Student> findByUserId(User userId);
+    boolean existsByEmail(String email);
+
 }

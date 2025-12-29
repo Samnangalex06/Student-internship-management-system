@@ -52,14 +52,14 @@ public class StudentAdminController {
 
     // EDIT FORM
     @GetMapping("/edit/{id}")
-    public String editForm(@PathVariable Long id, Model model) {
+    public String editForm(@PathVariable Integer id, Model model) {
         model.addAttribute("student", studentService.getById(id));
         return "edit-student";
     }
 
     // EDIT SUBMIT
     @PostMapping("/edit/{id}")
-    public String update(@PathVariable Long id, @ModelAttribute Student student, Model model) {
+    public String update(@PathVariable Integer id, @ModelAttribute Student student, Model model) {
         try {
             studentService.update(id, student);
             return "redirect:/admin/students";
@@ -72,7 +72,7 @@ public class StudentAdminController {
 
     // DELETE
     @PostMapping("/delete/{id}")
-    public String delete(@PathVariable Long id) {
+    public String delete(@PathVariable Integer id) {
         studentService.delete(id);
         return "redirect:/admin/students";
     }

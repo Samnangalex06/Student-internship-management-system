@@ -12,6 +12,7 @@ import project.demo.repository.StudentRepository;
 
 import java.util.List;
 
+ 
 @Service
 public class StudentService {
 
@@ -25,26 +26,26 @@ public class StudentService {
         return repo.findAll();
     }
 
-    public Student getById(Long id) {
+    public Student getById(Integer id) {
         return repo.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Student not found"));
+                .orElseThrow(() -> new RuntimeException("Student not found: " + id));
     }
 
     public Student create(Student s) {
         if (repo.existsByEmail(s.getEmail())) {
-            throw new IllegalArgumentException("Email already exists");
+            throw new RuntimeException("Email already exists");
         }
         return repo.save(s);
     }
 
-    public Student update(Long id, Student s) {
+    public Student update(Integer id, Student updated) {
         Student existing = getById(id);
-        existing.setFullName(s.getFullName());
-        existing.setEmail(s.getEmail());
+        existing.setFullName(updated.getFullName());
+        existing.setEmail(updated.getEmail());
         return repo.save(existing);
     }
 
-    public void delete(Long id) {
+    public void delete(Integer id) {
         repo.deleteById(id);
     }
 }
