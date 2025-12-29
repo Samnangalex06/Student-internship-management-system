@@ -19,10 +19,9 @@ public class Company {
     @Column(name = "phone_number")
     private Integer phoneNumber;
 
-    // Constructors
     public Company() {}
 
-    // Getters and Setters
+
     public Integer getId() {
         return id;
     }
