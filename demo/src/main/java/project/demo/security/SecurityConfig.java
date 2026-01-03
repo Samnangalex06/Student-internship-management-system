@@ -30,8 +30,7 @@ public class SecurityConfig {
                 
                 .requestMatchers("/login").permitAll()
                 .requestMatchers("/admin/**").hasAuthority("ADMIN")
-                .requestMatchers("/api/**").permitAll() //for test
-                .requestMatchers("/supervisor/**").hasAnyAuthority("SUPERVISOR")
+                .requestMatchers("/supervisor/**").hasAuthority("SUPERVISOR")
                 .requestMatchers("/student/**").hasAuthority("STUDENT")
                 .anyRequest().authenticated()
             )
@@ -42,8 +41,12 @@ public class SecurityConfig {
                 .passwordParameter("password")
                 .successHandler(successHandler)
                 .permitAll()
-            );
-
+            )
+            .logout(logout -> logout
+            .logoutUrl("/logout")
+            .logoutSuccessUrl("/login?logout")
+            .invalidateHttpSession(true)
+        );
         return http.build();
     }
     
