@@ -4,6 +4,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+
 import jakarta.persistence.Table;
 
 @Entity
@@ -19,6 +20,10 @@ public class Supervisor {
     private String email;
     private Integer phoneNumber;
     private String department;
+
+    // @OneToMany(mappedBy = "supervisor")
+    // @JsonIgnore
+    // private List<Student> students;
 
     // --- Getters & Setters ---
     public Integer getId() { return id; }
