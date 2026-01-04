@@ -39,6 +39,10 @@ public class ApplicationService {
     public List<Application> getApplicationsByCompany(Integer companyId) {
         return applicationRepository.findByCompanyId(companyId);
     }
+    //get application by supervisor ID
+    public List<Application> getApplicationsBySupervisor(Integer supervisorId) {
+        return applicationRepository.findBySupervisorId(supervisorId);
+    }
 
     // Update application
     public Application updateApplication(Integer id, Application applicationDetails) {

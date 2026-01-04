@@ -17,6 +17,10 @@ public class Application {
     @Column(nullable = false)
     private Integer companyId;
 
+    @Column(nullable = false)
+    private Integer supervisorId;
+
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private ApplicationStatus status = ApplicationStatus.PENDING;
@@ -54,6 +58,9 @@ public class Application {
     public Integer getCompanyId() {
         return companyId;
     }
+    public Integer getSupervisorId(){
+        return supervisorId;
+    }
 
     public ApplicationStatus getStatus() {
         return status;
@@ -79,7 +86,9 @@ public class Application {
     public void setCompanyId(Integer companyId) {
         this.companyId = companyId;
     }
-
+    public void setSupervisorId(Integer supervisorId) {
+        this.supervisorId=supervisorId;
+    }
     public void setStatus(ApplicationStatus status) {
         this.status = status;
     }
