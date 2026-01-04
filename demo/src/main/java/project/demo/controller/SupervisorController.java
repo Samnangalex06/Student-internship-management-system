@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import project.demo.entity.Application.ApplicationStatus;
 import project.demo.entity.Company;
 import project.demo.entity.Supervisor;
 import project.demo.entity.User;
@@ -91,4 +92,17 @@ public class SupervisorController {
         // src/main/resources/templates/supervisor/supervisor-dashboard.html
         return "Supervisor/dashboard";
     }
+
+        
+        @PostMapping("/applications/{id}/accept")
+                public String acceptApplication(@PathVariable Integer id) {
+                applicationService.updateStatus(id, ApplicationStatus.APPROVED);
+                return "redirect:/supervisor/dashboard";
+        }
+
+        @PostMapping("/applications/{id}/reject")
+                public String rejectApplication(@PathVariable Integer id) {
+                applicationService.updateStatus(id, ApplicationStatus.REJECTED);
+                return "redirect:/supervisor/dashboard";
+        }
 }

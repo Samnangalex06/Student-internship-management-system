@@ -11,6 +11,7 @@
 
 <body class="app-shell">
 <div class="container app-content mt-4">
+    <div th:replace="~{fragments/supervisor-nav :: SupervisorNv}"></div>
 
     <div class="glass p-4 mb-4">
         <h3 class="mb-1">Welcome,
@@ -37,34 +38,63 @@
 
     </div>
 
-    <div class="glass p-4">
-        <h5 class="mb-3">Recent Applications</h5>
+   <div class="glass p-4">
+    <h5 class="mb-3">Recent Applications</h5>
 
-        <table class="table table-dark table-hover align-middle">
-            <thead>
-            <tr>
-                <th>ID</th>
-                <th>Company</th>
-                <th>Status</th>
-                <th>Created</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="app : ${recentApplications}">
-                <td th:text="${app.id}">1</td>
-                <td th:text="${companyMap[app.companyId]}">Company</td>
-                <td th:text="${app.status}">Pending</td>
-                <td th:text="${#temporals.format(app.createdAt, 'dd MMM yyyy')}">Date</td>
-            </tr>
+    <table class="table table-dark table-hover align-middle">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Company</th>
+            <th>Status</th>
+            <th>Created</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="app : ${recentApplications}">
+            <td th:text="${app.id}">1</td>
+            <td th:text="${companyMap[app.companyId]}">Company</td>
+            <td th:text="${app.status}">Pending</td>
+            <td th:text="${#temporals.format(app.createdAt, 'dd MMM yyyy')}">Date</td>
+            <td class="d-flex gap-2">
 
-            <tr th:if="${#lists.isEmpty(recentApplications)}">
-                <td colspan="4" class="text-center small-muted">
-                    No applications yet
-                </td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
+                <!-- View button -->
+                <a class="btn btn-outline-info btn-sm"
+                   th:href="@{/supervisor/applications/view/{id}(id=${app.id})}">
+                    View
+                </a>
+
+                <!-- Approve button -->
+                <form th:action="@{/supervisor/applications/{id}/accept(id=${app.id})}" method="post">
+                    <button class="btn btn-success btn-sm"
+                            type="submit"
+                            th:disabled="${app.status != 'PENDING'}">
+                        Approve
+                    </button>
+                </form>
+
+                <!-- Reject button -->
+                <form th:action="@{/supervisor/applications/{id}/reject(id=${app.id})}" method="post">
+                    <button class="btn btn-danger btn-sm"
+                            type="submit"
+                            th:disabled="${app.status != 'PENDING'}">
+                        Reject
+                    </button>
+                </form>
+
+            </td>
+        </tr>
+
+        <tr th:if="${#lists.isEmpty(recentApplications)}">
+            <td colspan="5" class="text-center small-muted">
+                No applications yet
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
 
 </div>
 
