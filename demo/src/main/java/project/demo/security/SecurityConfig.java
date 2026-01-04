@@ -29,6 +29,7 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 
                 .requestMatchers("/login").permitAll()
+                  .requestMatchers("/api/companies/**").hasAuthority("ADMIN")
                 .requestMatchers("/Admin/**").hasAuthority("ADMIN")
                 .requestMatchers("/supervisor/**").hasAuthority("SUPERVISOR")
                 .requestMatchers("/student/**").hasAuthority("STUDENT")
@@ -46,6 +47,9 @@ public class SecurityConfig {
             .logoutUrl("/logout")
             .logoutSuccessUrl("/login?logout")
             .invalidateHttpSession(true)
+        )
+           .exceptionHandling(exception -> exception
+            .accessDeniedPage("/access-denied")
         );
         return http.build();
     }
