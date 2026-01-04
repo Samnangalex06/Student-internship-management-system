@@ -7,5 +7,7 @@ import project.demo.entity.Supervisor;
 public  interface SupervisorRepository extends JpaRepository<Supervisor,Integer> {
     boolean existsByUserId(Integer userId);
 
+    boolean existsByEmail(String email);
+
     
 }
