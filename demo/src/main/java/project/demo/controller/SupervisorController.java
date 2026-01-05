@@ -1,6 +1,5 @@
 package project.demo.controller;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -8,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import project.demo.entity.Application;
 import project.demo.entity.Application.ApplicationStatus;
 import project.demo.entity.Company;
 import project.demo.entity.Supervisor;
@@ -23,21 +23,25 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-
 @Controller
 @RequestMapping("/supervisor")
 public class SupervisorController {
 
     @Autowired
     private SupervisorRepository supervisorRepository;
+
     @Autowired
     private UserRepository userRepo;
+
     @Autowired
     private ApplicationService applicationService;
+
     @Autowired
     private CompanyRepository companyRepository;
 
-    // Supervisor dashboard page
+    // =========================
+    // Supervisor Dashboard
+    // =========================
     @GetMapping("/dashboard")
     public String supervisorDashboard(Model model) {
 
@@ -56,26 +60,28 @@ public class SupervisorController {
 
         model.addAttribute("supervisor", supervisor);
 
-        // Supervisor-related applications
-        List<project.demo.entity.Application> apps =
+        // Get applications supervised by this supervisor
+        List<Application> apps =
                 applicationService.getApplicationsBySupervisor(supervisor.getId());
 
+        // Sort by created date (latest first)
         apps = apps.stream()
                 .sorted(Comparator.comparing(
-                        project.demo.entity.Application::getCreatedAt,
+                        Application::getCreatedAt,
                         Comparator.nullsLast(Comparator.reverseOrder())
                 ))
                 .collect(Collectors.toList());
 
         model.addAttribute("applicationCount", apps.size());
 
-        String currentStatus = apps.isEmpty()
+        String latestStatus = apps.isEmpty()
                 ? "No applications"
                 : apps.get(0).getStatus().name();
-        model.addAttribute("latestStatus", currentStatus);
+        model.addAttribute("latestStatus", latestStatus);
 
+        // Company name mapping
         Map<Integer, String> companyMap = apps.stream()
-                .map(project.demo.entity.Application::getCompanyId)
+                .map(Application::getCompanyId)
                 .distinct()
                 .collect(Collectors.toMap(
                         id -> id,
@@ -88,21 +94,24 @@ public class SupervisorController {
         model.addAttribute("companyMap", companyMap);
         model.addAttribute("recentApplications", apps.stream().limit(5).toList());
 
-        // Note: Thymeleaf template should be located at:
-        // src/main/resources/templates/supervisor/supervisor-dashboard.html
         return "Supervisor/dashboard";
     }
 
-        
-        @PostMapping("/applications/{id}/accept")
-                public String acceptApplication(@PathVariable Integer id) {
-                applicationService.updateStatus(id, ApplicationStatus.APPROVED);
-                return "redirect:/Supervisor/dashboard";
-        }
+    // =========================
+    // Accept Application
+    // =========================
+    @PostMapping("/applications/{id}/accept")
+    public String acceptApplication(@PathVariable Integer id) {
+        applicationService.approveApplication(id);
+        return "redirect:/supervisor/dashboard";
+    }
 
-        @PostMapping("/applications/{id}/reject")
-                public String rejectApplication(@PathVariable Integer id) {
-                applicationService.updateStatus(id, ApplicationStatus.REJECTED);
-                return "redirect:/Supervisor/dashboard";
-        }
+    // =========================
+    // Reject Application
+    // =========================
+    @PostMapping("/applications/{id}/reject")
+    public String rejectApplication(@PathVariable Integer id) {
+        applicationService.rejectApplication(id);
+        return "redirect:/supervisor/dashboard";
+    }
 }
