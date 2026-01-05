@@ -1,105 +1,108 @@
-// package project.demo.controller;
-
-// import org.springframework.stereotype.Controller;
-// import org.springframework.ui.Model;
-// import org.springframework.web.bind.annotation.GetMapping;
-
-
-
-// @Controller
-// public class SupervisorController {
-// 	@GetMapping("/viwe_Applications_Status")
-// 	public String viwe_Applications_Status(Model model) {
-// 		return "here you are!";
-// 	}
-	
-// }
-
 package project.demo.controller;
 
-import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-import project.demo.entity.Supervisor;
-import project.demo.Model.SupervisorDTO;
-import project.demo.repository.SupervisorRepository;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+
+import project.demo.entity.Application.ApplicationStatus;
+import project.demo.entity.Company;
+import project.demo.entity.Supervisor;
+import project.demo.entity.User;
+
+import project.demo.repository.CompanyRepository;
+import project.demo.repository.SupervisorRepository;
+import project.demo.repository.UserRepository;
+import project.demo.service.ApplicationService;
+
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
-@RestController
-@RequestMapping("/api/supervisors")
+
+@Controller
+@RequestMapping("/supervisor")
 public class SupervisorController {
 
     @Autowired
     private SupervisorRepository supervisorRepository;
+    @Autowired
+    private UserRepository userRepo;
+    @Autowired
+    private ApplicationService applicationService;
+    @Autowired
+    private CompanyRepository companyRepository;
 
-    // --- CREATE supervisor ---
-    @PostMapping
-    public SupervisorDTO createSupervisor(@Valid @RequestBody SupervisorDTO dto) {
-        if (supervisorRepository.existsByUserId(dto.getUserId())) {
-            throw new RuntimeException("User is already a supervisor");
+    // Supervisor dashboard page
+    @GetMapping("/dashboard")
+    public String supervisorDashboard(Model model) {
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String email = auth != null ? auth.getName() : null;
+
+        if (email == null) {
+            return "redirect:/login";
         }
 
-        Supervisor supervisor = new Supervisor();
-        supervisor.setUserId(dto.getUserId());
-        supervisor.setFullName(dto.getFullName());
-        supervisor.setEmail(dto.getEmail());
-        supervisor.setPhoneNumber(dto.getPhone());
-        supervisor.setDepartment(dto.getDepartment());
+        User user = userRepo.findByEmailWithRoles(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
-        Supervisor saved = supervisorRepository.save(supervisor);
+        Supervisor supervisor = supervisorRepository.findByUserId(user.getId())
+                .orElseThrow(() -> new RuntimeException("Supervisor record not found"));
 
-        return toDTO(saved);
-    }
+        model.addAttribute("supervisor", supervisor);
 
-    // --- READ all supervisors ---
-    @GetMapping
-    public List<SupervisorDTO> getAllSupervisors() {
-        return supervisorRepository.findAll()
-                .stream()
-                .map(this::toDTO)
+        // Supervisor-related applications
+        List<project.demo.entity.Application> apps =
+                applicationService.getApplicationsBySupervisor(supervisor.getId());
+
+        apps = apps.stream()
+                .sorted(Comparator.comparing(
+                        project.demo.entity.Application::getCreatedAt,
+                        Comparator.nullsLast(Comparator.reverseOrder())
+                ))
                 .collect(Collectors.toList());
+
+        model.addAttribute("applicationCount", apps.size());
+
+        String currentStatus = apps.isEmpty()
+                ? "No applications"
+                : apps.get(0).getStatus().name();
+        model.addAttribute("latestStatus", currentStatus);
+
+        Map<Integer, String> companyMap = apps.stream()
+                .map(project.demo.entity.Application::getCompanyId)
+                .distinct()
+                .collect(Collectors.toMap(
+                        id -> id,
+                        id -> companyRepository.findById(id)
+                                .map(Company::getName)
+                                .orElse("Unknown"),
+                        (a, b) -> a
+                ));
+
+        model.addAttribute("companyMap", companyMap);
+        model.addAttribute("recentApplications", apps.stream().limit(5).toList());
+
+        // Note: Thymeleaf template should be located at:
+        // src/main/resources/templates/supervisor/supervisor-dashboard.html
+        return "Supervisor/dashboard";
     }
 
-    // --- READ supervisor by ID ---
-    @GetMapping("/{id}")
-    public SupervisorDTO getSupervisor(@PathVariable Integer id) {
-        Supervisor sup = supervisorRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Supervisor not found"));
-        return toDTO(sup);
-    }
+        
+        @PostMapping("/applications/{id}/accept")
+                public String acceptApplication(@PathVariable Integer id) {
+                applicationService.updateStatus(id, ApplicationStatus.APPROVED);
+                return "redirect:/Supervisor/dashboard";
+        }
 
-    // --- UPDATE supervisor ---
-    @PutMapping("/{id}")
-    public SupervisorDTO updateSupervisor(@PathVariable Integer id, @Valid @RequestBody SupervisorDTO dto) {
-        Supervisor sup = supervisorRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Supervisor not found"));
-
-        sup.setFullName(dto.getFullName());
-        sup.setEmail(dto.getEmail());
-        sup.setPhoneNumber(dto.getPhone());
-        sup.setDepartment(dto.getDepartment());
-
-        Supervisor updated = supervisorRepository.save(sup);
-        return toDTO(updated);
-    }
-
-    // --- DELETE supervisor ---
-    @DeleteMapping("/{id}")
-    public String deleteSupervisor(@PathVariable Integer id) {
-        supervisorRepository.deleteById(id);
-        return "Supervisor deleted successfully";
-    }
-
-    // --- Helper method to convert Entity → DTO ---
-    private SupervisorDTO toDTO(Supervisor supervisor) {
-        SupervisorDTO dto = new SupervisorDTO();
-        dto.setUserId(supervisor.getUserId());
-        dto.setFullName(supervisor.getFullName());
-        dto.setEmail(supervisor.getEmail());
-        dto.setPhone(supervisor.getPhoneNumber());
-        dto.setDepartment(supervisor.getDepartment());
-        return dto;
-    }
+        @PostMapping("/applications/{id}/reject")
+                public String rejectApplication(@PathVariable Integer id) {
+                applicationService.updateStatus(id, ApplicationStatus.REJECTED);
+                return "redirect:/Supervisor/dashboard";
+        }
 }

@@ -1,8 +1,4 @@
-// package project.demo.service;
 
-// public class StudentService {
-    
-// }
 
 package project.demo.service;
 
@@ -32,16 +28,14 @@ public class StudentService {
     }
 
     public Student create(Student s) {
-        if (repo.existsByEmail(s.getEmail())) {
-            throw new RuntimeException("Email already exists");
-        }
         return repo.save(s);
     }
 
-    public Student update(Integer id, Student updated) {
+    public Student update(Integer id, Student s) {
         Student existing = getById(id);
-        existing.setFullName(updated.getFullName());
-        existing.setEmail(updated.getEmail());
+        existing.setFullName(s.getFullName());
+        existing.setDepartment(s.getDepartment());
+        existing.setPhoneNumber(s.getPhoneNumber());
         return repo.save(existing);
     }
 

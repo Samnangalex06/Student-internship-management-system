@@ -3,7 +3,7 @@ package project.demo.controller;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.web.bind.annotation.RestController;
 import project.demo.entity.Company;
 import project.demo.repository.CompanyRepository;
 

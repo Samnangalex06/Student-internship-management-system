@@ -7,39 +7,50 @@
 </head>
 
 <body class="app-shell">
-<div th:replace="fragments/student-nav :: studentNav"></div>
+  <div th:replace="fragments/student-nav :: studentNav"></div>
 
-<div class="container app-content">
-  <div class="glass p-4">
-    <h3 th:text="${application.id == null ? 'New Application' : 'Edit Application'}"></h3>
-    <div class="small-muted">Fill in internship details</div>
+  <div class="container app-content">
+    <div class="glass p-4">
+      <h3 th:text="${application.id == null ? 'New Application' : 'Edit Application'}"></h3>
+      <div class="small-muted">Fill in internship details</div>
 
-    <hr class="border-light opacity-10 my-4">
+      <hr class="border-light opacity-10 my-4">
 
-    <form th:action="@{/student/applications/save}" method="post" th:object="${application}">
-      <input type="hidden" th:field="*{id}">
+      <form th:action="@{/student/applications/save}" 
+            method="post" 
+            th:object="${application}" 
+            enctype="multipart/form-data"> 
 
-      <div class="mb-3">
-        <label class="form-label">Title</label>
-        <input class="form-control" th:field="*{title}" required>
-      </div>
+        <input type="hidden" th:field="*{id}">
 
-      <div class="mb-3">
-        <label class="form-label">Description</label>
-        <textarea class="form-control" th:field="*{description}" rows="4" required></textarea>
-      </div>
+        <div class="mb-3">
+          <label class="form-label">Title</label>
+          <input class="form-control" th:field="*{title}" placeholder="Enter application title" required>
+        </div>
 
-      <button class="btn btn-primary"
-        th:if="${application.status == null || application.status.name() == 'PENDING'}">
-        Save
-      </button>
+        <div class="mb-3">
+          <label class="form-label">Description</label>
+          <textarea class="form-control" th:field="*{description}" rows="4" placeholder="Enter description" required></textarea>
+        </div>
 
-      <div class="alert alert-warning mt-3"
-        th:if="${application.status != null && application.status.name() != 'PENDING'}">
-        Editing is disabled after approval.
-      </div>
-    </form>
+        <!-- Document Upload -->
+        <div class="mb-3">
+          <label class="form-label">Upload Documents</label>
+          <input type="file" name="documents" class="form-control" multiple>
+          <small class="text-muted">You can upload multiple documents (PDF, DOCX, etc.)</small>
+        </div>
+
+        <button class="btn btn-primary"
+          th:if="${application.status == null || application.status.name() == 'PENDING'}">
+          Save
+        </button>
+
+        <div class="alert alert-warning mt-3"
+          th:if="${application.status != null && application.status.name() != 'PENDING'}">
+          Editing is disabled after approval.
+        </div>
+      </form>
+    </div>
   </div>
-</div>
 </body>
 </html>

@@ -44,7 +44,7 @@ public class StudentController {
         String email = auth != null ? auth.getName() : null;
 
         if (email != null) {
-            Optional<User> userOpt = userRepository.findUsersByEmail(email);
+            Optional<User> userOpt = userRepository.findByEmailWithRoles(email);
             if (userOpt.isPresent()) {
                 User user = userOpt.get();
                 Optional<Student> studentOpt = studentRepository.findByUserId(user);
@@ -101,7 +101,7 @@ public class StudentController {
         String email = auth != null ? auth.getName() : null;
 
         if (email != null) {
-            Optional<User> userOpt = userRepository.findUsersByEmail(email);
+            Optional<User> userOpt = userRepository.findByEmailWithRoles(email);
             if (userOpt.isPresent()) {
                 Optional<Student> studentOpt = studentRepository.findByUserId(userOpt.get());
                 studentOpt.ifPresent(student -> model.addAttribute("student", student));
@@ -120,8 +120,9 @@ public class StudentController {
         String email = auth != null ? auth.getName() : null;
 
         if (email != null) {
-            Optional<User> userOpt = userRepository.findUsersByEmail(email);
+            Optional<User> userOpt = userRepository.findByEmailWithRoles(email);
             if (userOpt.isPresent()) {
+
                 Optional<Student> studentOpt = studentRepository.findByUserId(userOpt.get());
                 if (studentOpt.isPresent()) {
                     // Using the full path here as well
@@ -145,7 +146,7 @@ public class StudentController {
         model.addAttribute("applications", java.util.List.of());
         return "student/application-list";
     }
-
+    
     @GetMapping("/evaluations")
     public String evaluations(Model model) {
         model.addAttribute("evaluations", java.util.List.of());
