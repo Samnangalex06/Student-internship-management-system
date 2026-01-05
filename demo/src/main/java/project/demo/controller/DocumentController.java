@@ -36,7 +36,6 @@ public class DocumentController {
 
         Path uploadPath = Paths.get("uploads");
 
-     
         if (!Files.exists(uploadPath)) {
             Files.createDirectories(uploadPath);
         }

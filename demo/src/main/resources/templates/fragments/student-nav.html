@@ -1,54 +1,97 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
   <body>
-    <nav th:fragment="adminNav" class="navbar navbar-expand-lg navbar-dark">
-      <div class="container-fluid">
-        <a class="navbar-brand fw-semibold" th:href="@{/admin/dashboard}">
-          SIMS <span class="badge badge-soft ms-2">Admin</span>
-        </a>
 
-        <button
-          class="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#nav"
-        >
-          <span class="navbar-toggler-icon"></span>
-        </button>
+    <nav th:fragment="studentNav" class="app-nav">
 
-        <div class="collapse navbar-collapse" id="nav">
-          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-            <li class="nav-item">
-              <a class="nav-link" th:href="@{/admin/dashboard}">Dashboard</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" th:href="@{/admin/students}">Students</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" th:href="@{/admin/supervisors}"
-                >Supervisors</a
-              >
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" th:href="@{/admin/companies}">Companies</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" th:href="@{/admin/assign-supervisor}"
-                >Assign</a
-              >
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" th:href="@{/admin/approvals}">Approvals</a>
-            </li>
-          </ul>
+      <style>
+        .app-nav {
+          position: sticky;
+          top: 0;
+          z-index: 1000;
 
-          <div class="d-flex gap-2">
-            <a class="btn btn-outline-light btn-sm" th:href="@{/logout}"
-              >Logout</a
-            >
-          </div>
-        </div>
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+
+          padding: 0.75rem 1.25rem;
+          background: rgba(20, 20, 30, 0.85);
+          backdrop-filter: blur(10px);
+
+          border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .app-nav .nav-left {
+          display: flex;
+          align-items: center;
+          gap: 1rem;
+          flex-wrap: wrap;
+        }
+
+        .app-nav .brand {
+          font-weight: 700;
+          color: #ffffff;
+        }
+
+        .app-nav .brand .role {
+          font-size: 0.75rem;
+          padding: 0.2rem 0.45rem;
+          margin-left: 0.35rem;
+          border-radius: 999px;
+          background: linear-gradient(135deg, #0d6efd, #6610f2);
+          color: #ffffff;
+        }
+
+        .app-nav a {
+          text-decoration: none;
+          font-size: 0.9rem;
+          color: #cfd3ff;
+          padding: 0.35rem 0.6rem;
+          border-radius: 6px;
+          transition: all 0.15s ease;
+        }
+
+        .app-nav a:hover {
+          background: rgba(255, 255, 255, 0.08);
+          color: #ffffff;
+        }
+
+        .app-nav .logout {
+          color: #ffb4b4;
+          font-weight: 500;
+        }
+
+        .app-nav .logout:hover {
+          background: rgba(220, 53, 69, 0.25);
+          color: #ffffff;
+        }
+
+        @media (max-width: 768px) {
+          .app-nav {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.5rem;
+          }
+
+          .app-nav .logout {
+            align-self: flex-end;
+          }
+        }
+      </style>
+
+      <div class="nav-left">
+        <span class="brand">
+          SIMS <span class="role">Student</span>
+        </span>
+
+        <a th:href="@{/student/dashboard}">Dashboard</a>
+        <a th:href="@{/student/applications}">Applications</a>
+        <a th:href="@{/student/evaluations}">Evaluations</a>
+        <a th:href="@{/student/profile}">Profile</a>
       </div>
+
+      <a class="logout" th:href="@{/logout}">Logout</a>
     </nav>
+
   </body>
 </html>
