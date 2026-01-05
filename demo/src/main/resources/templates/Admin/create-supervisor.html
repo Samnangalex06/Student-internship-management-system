@@ -33,16 +33,46 @@
         <form
           th:action="@{/admin/supervisors/create}"
           method="post"
-          th:object="${supervisor}"
+          
         >
           <div class="mb-3">
             <label class="form-label">Full Name</label>
             <input
               class="form-control"
               type="text"
-              th:field="*{fullName}"
+              th:field="${supervisor.fullName}"
               required
               placeholder="e.g. Mr. Dara"
+            />
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Password</label>
+            <input
+              class="form-control"
+              type="password"
+              th:field="${user.password}"
+              required
+              placeholder="e.g. userpassword***"
+            />
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Contact</label>
+            <input
+              class="form-control"
+              type="text"
+              th:field="${supervisor.phoneNumber}"
+              required
+              placeholder="e.g. 12300044"
+            />
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Department</label>
+            <input
+              class="form-control"
+              type="text"
+              th:field="${supervisor.department}"
+              required
+              placeholder="e.g. GIC/GIM...."
             />
           </div>
 
@@ -51,7 +81,7 @@
             <input
               class="form-control"
               type="email"
-              th:field="*{email}"
+              th:field="${user.email}"
               required
               placeholder="e.g. supervisor@gmail.com"
             />

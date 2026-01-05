@@ -15,12 +15,16 @@ public class Supervisor {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    
+    @JoinColumn(name ="user_id")
     private Integer userId;
+
     private String fullName;
     private String email;
     private Integer phoneNumber;
     private String department;
 
+    
     // @OneToMany(mappedBy = "supervisor")
     // @JsonIgnore
     // private List<Student> students;
