@@ -50,6 +50,4 @@ public class UserService {
 
         return userRepository.save(savedUser);
     }
-
-
 }

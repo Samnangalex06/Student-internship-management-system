@@ -3,23 +3,19 @@ package project.demo.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-// Removed the generic Application import to prevent naming conflicts
 import project.demo.entity.Student;
-import project.demo.entity.User;
-import project.demo.entity.Company;
+import project.demo.entity.Application;
 import project.demo.repository.StudentRepository;
 import project.demo.repository.UserRepository;
 import project.demo.repository.CompanyRepository;
 import project.demo.service.ApplicationService;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Controller
@@ -38,118 +34,138 @@ public class StudentController {
     @Autowired
     private CompanyRepository companyRepository;
 
-    @GetMapping("/dashboard")
-    public String dashboard(Model model) {
+    // Helper to get current logged-in student
+    private Student getCurrentStudent() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String email = auth != null ? auth.getName() : null;
 
-        if (email != null) {
-            Optional<User> userOpt = userRepository.findByEmailWithRoles(email);
-            if (userOpt.isPresent()) {
-                User user = userOpt.get();
-                Optional<Student> studentOpt = studentRepository.findByUserId(user);
-                if (studentOpt.isPresent()) {
-                    Student student = studentOpt.get();
-                    model.addAttribute("student", student);
+        if (email == null) return null;
 
-                    // Force the compiler to use your specific Entity class
-                    List<project.demo.entity.Application> apps = applicationService.getApplicationsByStudent(student.getId());
-                    
-                    apps = apps.stream()
-                            .sorted(Comparator.comparing(project.demo.entity.Application::getCreatedAt, Comparator.nullsLast(Comparator.reverseOrder())))
-                            .collect(Collectors.toList());
+        return userRepository.findByEmailWithRoles(email)
+                .flatMap(user -> studentRepository.findByUserId(user))
+                .orElse(null);
+    }
 
-                    model.addAttribute("applicationCount", apps.size());
+    // ==================== DASHBOARD ====================
+    @GetMapping("/dashboard")
+    public String dashboard(Model model) {
+        Student student = getCurrentStudent();
 
-                    // Fix for lines 62-64: Explicitly use the full path to access getStatus()
-                    String currentStatus = "No application";
-                    if (apps != null && !apps.isEmpty()) {
-                        project.demo.entity.Application latestApp = apps.get(0);
-                        if (latestApp.getStatus() != null) {
-                            currentStatus = latestApp.getStatus().name();
-                        }
-                    }
-                    model.addAttribute("latestStatus", currentStatus);
+        if (student != null) {
+            model.addAttribute("student", student);
 
-                    // Build company map using the full path
-                    java.util.Map<Integer, String> companyMap = apps.stream()
-                        .map(project.demo.entity.Application::getCompanyId)
-                        .distinct()
-                        .collect(Collectors.toMap(
-                            id -> id, 
-                            id -> companyRepository.findById(id).map(Company::getName).orElse("Unknown"),
-                            (existing, replacement) -> existing // Prevent duplicate key errors
-                        ));
+            List<Application> apps = applicationService.getApplicationsByStudent(student.getId());
+            apps.sort(Comparator.comparing(Application::getCreatedAt,
+                    Comparator.nullsLast(Comparator.reverseOrder())));
 
-                    model.addAttribute("companyMap", companyMap);
-                    model.addAttribute("recentApplications", apps.stream().limit(5).collect(Collectors.toList()));
-                    return "student/dashboard";
-                }
+            model.addAttribute("applicationCount", apps.size());
+
+            String latestStatus = apps.isEmpty() ? "No application"
+                    : Optional.ofNullable(apps.get(0).getStatus())
+                              .map(Enum::name)
+                              .orElse("PENDING");
+            model.addAttribute("latestStatus", latestStatus);
+
+            Map<Integer, String> companyMap = new HashMap<>();
+            Set<Integer> companyIds = apps.stream()
+                    .map(Application::getCompanyId)
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toSet());
+
+            if (!companyIds.isEmpty()) {
+                companyRepository.findAllById(companyIds).forEach(c ->
+                        companyMap.put(c.getId(), c.getName()));
             }
+
+            model.addAttribute("companyMap", companyMap);
+            model.addAttribute("recentApplications", apps.stream().limit(5).toList());
+
+        } else {
+            model.addAttribute("student", new Student());
+            model.addAttribute("applicationCount", 0);
+            model.addAttribute("latestStatus", "No application");
+            model.addAttribute("companyMap", Collections.emptyMap());
+            model.addAttribute("recentApplications", Collections.emptyList());
         }
 
-        model.addAttribute("student", new Student());
-        model.addAttribute("applicationCount", 0);
-        model.addAttribute("latestStatus", "No application");
-        model.addAttribute("recentApplications", java.util.List.of());
         return "student/dashboard";
     }
 
+    // ==================== PROFILE ====================
     @GetMapping("/profile")
     public String profile(Model model) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String email = auth != null ? auth.getName() : null;
-
-        if (email != null) {
-            Optional<User> userOpt = userRepository.findByEmailWithRoles(email);
-            if (userOpt.isPresent()) {
-                Optional<Student> studentOpt = studentRepository.findByUserId(userOpt.get());
-                studentOpt.ifPresent(student -> model.addAttribute("student", student));
-            }
-        }
-
-        if (!model.containsAttribute("student")) {
-            model.addAttribute("student", new Student());
-        }
+        Student student = getCurrentStudent();
+        model.addAttribute("student", student != null ? student : new Student());
         return "student/profile-form";
     }
 
+    // ==================== APPLICATION LIST ====================
     @GetMapping("/applications")
     public String applications(Model model) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String email = auth != null ? auth.getName() : null;
+        Student student = getCurrentStudent();
 
-        if (email != null) {
-            Optional<User> userOpt = userRepository.findByEmailWithRoles(email);
-            if (userOpt.isPresent()) {
+        if (student != null) {
+            List<Application> apps = applicationService.getApplicationsByStudent(student.getId());
 
-                Optional<Student> studentOpt = studentRepository.findByUserId(userOpt.get());
-                if (studentOpt.isPresent()) {
-                    // Using the full path here as well
-                    List<project.demo.entity.Application> apps = applicationService.getApplicationsByStudent(studentOpt.get().getId());
-                    java.util.Map<Integer, String> companyMap = apps.stream()
-                        .map(project.demo.entity.Application::getCompanyId)
-                        .distinct()
-                        .collect(Collectors.toMap(
-                            id -> id, 
-                            id -> companyRepository.findById(id).map(Company::getName).orElse("Unknown"),
-                            (existing, replacement) -> existing
-                        ));
+            Map<Integer, String> companyMap = new HashMap<>();
+            Set<Integer> companyIds = apps.stream()
+                    .map(Application::getCompanyId)
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toSet());
 
-                    model.addAttribute("applications", apps);
-                    model.addAttribute("companyMap", companyMap);
-                    return "student/application-list";
-                }
+            if (!companyIds.isEmpty()) {
+                companyRepository.findAllById(companyIds).forEach(c ->
+                        companyMap.put(c.getId(), c.getName()));
             }
+
+            model.addAttribute("applications", apps);
+            model.addAttribute("companyMap", companyMap);
+        } else {
+            model.addAttribute("applications", Collections.emptyList());
+            model.addAttribute("companyMap", Collections.emptyMap());
         }
 
-        model.addAttribute("applications", java.util.List.of());
         return "student/application-list";
     }
-    
+
+    // ==================== NEW APPLICATION FORM ====================
+    @GetMapping("/applications/new")
+    public String newApplicationForm(Model model) {
+        Student student = getCurrentStudent();
+        if (student == null) {
+            return "redirect:/login";
+        }
+
+        model.addAttribute("application", new Application());
+        model.addAttribute("companies", companyRepository.findAll());
+
+        return "student/application-form";
+    }
+
+    // ==================== VIEW / EDIT SINGLE APPLICATION ====================
+    @GetMapping("/applications/{id}")
+public String viewApplication(@PathVariable Integer id, Model model) {
+    Student student = getCurrentStudent();
+    if (student == null) {
+        return "redirect:/login";
+    }
+
+    Application app = applicationService.getById(id);
+
+    if (app == null || !app.getStudentId().equals(student.getId())) {
+        return "redirect:/student/applications";
+    }
+
+    model.addAttribute("application", app);
+    model.addAttribute("companies", companyRepository.findAll());
+
+    return "student/application-form";
+}
+
+    // ==================== EVALUATIONS (placeholder) ====================
     @GetMapping("/evaluations")
     public String evaluations(Model model) {
-        model.addAttribute("evaluations", java.util.List.of());
+        model.addAttribute("evaluations", Collections.emptyList());
         return "student/evaluation-list";
     }
-}   
+}

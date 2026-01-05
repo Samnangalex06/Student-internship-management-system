@@ -5,6 +5,7 @@ import project.demo.entity.Application.ApplicationStatus;
 import project.demo.repository.ApplicationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -16,14 +17,17 @@ public class ApplicationService {
     
     // Create a new application
     public Application createApplication(Application application) {
-        // Lifecycle methods in your Entity (@PrePersist) usually handle this,
-        // but keeping it here is fine as a backup.
         return applicationRepository.save(application);
     }
     
-    // Get application by ID
+    // Get application by ID (returns Optional - safe)
     public Optional<Application> getApplicationById(Integer id) {
         return applicationRepository.findById(id);
+    }
+    
+    // Helper used by StudentController: returns Application or null
+    public Application getById(Integer id) {
+        return getApplicationById(id).orElse(null);
     }
     
     // Get all applications
@@ -40,7 +44,8 @@ public class ApplicationService {
     public List<Application> getApplicationsByCompany(Integer companyId) {
         return applicationRepository.findByCompanyId(companyId);
     }
-    //get application by supervisor ID
+    
+    // Get applications by supervisor ID
     public List<Application> getApplicationsBySupervisor(Integer supervisorId) {
         return applicationRepository.findBySupervisorId(supervisorId);
     }
@@ -57,14 +62,13 @@ public class ApplicationService {
             return applicationRepository.save(app);
         }).orElse(null);
     }
-
     
     // Delete application
     public void deleteApplication(Integer id) {
         applicationRepository.deleteById(id);
     }
     
-    // Approve application - FIXED to actually change status
+    // Approve application
     public Application approveApplication(Integer id) {
         return applicationRepository.findById(id).map(app -> {
             app.setStatus(Application.ApplicationStatus.APPROVED);
@@ -72,18 +76,19 @@ public class ApplicationService {
         }).orElse(null);
     }
     
-    // Reject application - FIXED to actually change status
+    // Reject application
     public Application rejectApplication(Integer id) {
         return applicationRepository.findById(id).map(app -> {
             app.setStatus(Application.ApplicationStatus.REJECTED);
             return applicationRepository.save(app);
         }).orElse(null);
     }
-    //update status application
+    
+    // Update status application
     public Optional<Application> updateStatus(Integer id, ApplicationStatus status) {
-    return applicationRepository.findById(id).map(app -> {
-        app.setStatus(status);
-        return applicationRepository.save(app);
-    });
-}
+        return applicationRepository.findById(id).map(app -> {
+            app.setStatus(status);
+            return applicationRepository.save(app);
+        });
+    }
 }

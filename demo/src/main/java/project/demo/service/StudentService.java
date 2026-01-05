@@ -8,6 +8,7 @@ import project.demo.repository.StudentRepository;
 
 import java.util.List;
 
+ 
 @Service
 public class StudentService {
 
@@ -23,7 +24,7 @@ public class StudentService {
 
     public Student getById(Integer id) {
         return repo.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Student not found"));
+                .orElseThrow(() -> new RuntimeException("Student not found: " + id));
     }
 
     public Student create(Student s) {
