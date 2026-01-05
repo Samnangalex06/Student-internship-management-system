@@ -2,10 +2,8 @@ package project.demo.service;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import project.demo.Model.SupervisorDTO;
 import project.demo.entity.Supervisor;
 import project.demo.repository.SupervisorRepository;

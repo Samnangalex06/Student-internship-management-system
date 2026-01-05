@@ -97,12 +97,12 @@ public class SupervisorController {
         @PostMapping("/applications/{id}/accept")
                 public String acceptApplication(@PathVariable Integer id) {
                 applicationService.updateStatus(id, ApplicationStatus.APPROVED);
-                return "redirect:/supervisor/dashboard";
+                return "redirect:/Supervisor/dashboard";
         }
 
         @PostMapping("/applications/{id}/reject")
                 public String rejectApplication(@PathVariable Integer id) {
                 applicationService.updateStatus(id, ApplicationStatus.REJECTED);
-                return "redirect:/supervisor/dashboard";
+                return "redirect:/Supervisor/dashboard";
         }
 }
