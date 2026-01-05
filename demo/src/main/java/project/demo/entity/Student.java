@@ -18,8 +18,9 @@ public class Student {
     @Column (name = "email", unique = true)
     private String email;
 
-    @Column (name = "year")
+    @Column(name="study_year")
     private Integer year;
+
 
     @Column (name = "department")
     private String department;
