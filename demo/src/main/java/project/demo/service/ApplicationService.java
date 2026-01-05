@@ -83,6 +83,7 @@ public class ApplicationService {
             return applicationRepository.save(app);
         }).orElse(null);
     }
+<<<<<<< HEAD
     
     // Update status application
     public Optional<Application> updateStatus(Integer id, ApplicationStatus status) {
@@ -91,4 +92,6 @@ public class ApplicationService {
             return applicationRepository.save(app);
         });
     }
+=======
+>>>>>>> origin/main
 }
