@@ -15,4 +15,6 @@ public interface ApplicationRepository extends JpaRepository<Application, Intege
     List<Application> findByCompanyId(Integer companyId);
     
     Optional<Application> findByStudentIdAndCompanyId(Integer studentId, Integer companyId);
+
+    List<Application> findBySupervisorId(Integer supervisorId);
 }

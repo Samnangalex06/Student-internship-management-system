@@ -1,10 +1,10 @@
 package project.demo.service;
 
 import project.demo.entity.Application;
+import project.demo.entity.Application.ApplicationStatus;
 import project.demo.repository.ApplicationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,6 +40,10 @@ public class ApplicationService {
     public List<Application> getApplicationsByCompany(Integer companyId) {
         return applicationRepository.findByCompanyId(companyId);
     }
+    //get application by supervisor ID
+    public List<Application> getApplicationsBySupervisor(Integer supervisorId) {
+        return applicationRepository.findBySupervisorId(supervisorId);
+    }
 
     // Update application
     public Application updateApplication(Integer id, Application applicationDetails) {
@@ -53,6 +57,7 @@ public class ApplicationService {
             return applicationRepository.save(app);
         }).orElse(null);
     }
+
     
     // Delete application
     public void deleteApplication(Integer id) {
@@ -74,4 +79,12 @@ public class ApplicationService {
             return applicationRepository.save(app);
         }).orElse(null);
     }
+    //update status application
+    public Optional<Application> updateStatus(Integer id, ApplicationStatus status) {
+    return applicationRepository.findById(id).map(app -> {
+        app.setStatus(status);
+        return applicationRepository.save(app);
+    });
+}
+
 }

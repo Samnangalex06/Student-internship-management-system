@@ -9,43 +9,35 @@ version = '0.0.1-SNAPSHOT'
 description = 'Student Internship Management System'
 
 java {
-
-
- sourceCompatibility = '17'
-targetCompatibility = '17'
-
-
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(21)
+    }
 }
-
 repositories {
   mavenCentral()
 }
 
 dependencies {
+	// Spring Boot core
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+    // Database
+    implementation 'com.mysql:mysql-connector-j'
+    runtimeOnly 'com.h2database:h2'
 
+    // Flyway
+    implementation 'org.flywaydb:flyway-core'
+    implementation 'org.flywaydb:flyway-mysql'
 
-  // Spring Boot core
-  implementation 'org.springframework.boot:spring-boot-starter-web'
-  implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-  implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-  implementation 'org.springframework.boot:spring-boot-starter-security'
-  implementation 'org.springframework.boot:spring-boot-starter-actuator'
-  implementation 'org.springframework.boot:spring-boot-starter-validation'
-
-  // Database (MySQL)
-  implementation 'com.mysql:mysql-connector-j:9.1.0'
-
-  // Flyway
-  implementation 'org.flywaydb:flyway-core'
-  implementation 'org.flywaydb:flyway-mysql'
-
-  // Testing
-  testImplementation 'org.springframework.boot:spring-boot-starter-test'
-  testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-  runtimeOnly 'com.h2database:h2'
-
-
+	// Testing
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
+
 
 tasks.named('test') {
   useJUnitPlatform()

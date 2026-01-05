@@ -13,16 +13,16 @@ public class AdminPagesController {
         model.addAttribute("supervisorCount", 0);
         model.addAttribute("applicationCount", 0);
         model.addAttribute("recentLogs", java.util.Collections.emptyList());
-        return "admin-dashboard";
+        return "Admin/admin-dashboard";
     }
 
     @GetMapping("/admin/assign-supervisor")
     public String assignSupervisor() {
-        return "assign-supervisor";
+        return "Admin/assign-supervisor";
     }
 
     @GetMapping("/admin/approvals")
     public String approvals() {
-        return "approvals";
+        return "Admin/approvals";
     }
 }

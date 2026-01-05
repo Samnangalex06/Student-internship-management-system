@@ -3,7 +3,9 @@ package project.demo.controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
 import project.demo.entity.Document;
+import project.demo.entity.Student;
 import project.demo.repository.DocumentRepository;
 
 import java.io.IOException;
@@ -24,31 +26,29 @@ public class DocumentController {
     @PostMapping("/upload")
     public ResponseEntity<?> uploadDocument(
             @RequestParam("file") MultipartFile file,
-            @RequestParam("userId") Long userId
+            @RequestParam("student_id") Student student_id
     ) throws IOException {
 
         if (file.isEmpty()) {
             return ResponseEntity.badRequest().body("File is empty");
         }
 
-        // ✅ Project root/uploads
+
         Path uploadPath = Paths.get("uploads");
 
-        // create folder if not exists
+     
         if (!Files.exists(uploadPath)) {
             Files.createDirectories(uploadPath);
         }
 
-        // save file
         Path filePath = uploadPath.resolve(file.getOriginalFilename());
         Files.copy(file.getInputStream(), filePath);
 
-        // save to DB
+
         Document document = new Document();
         document.setFileName(file.getOriginalFilename());
         document.setFilePath(filePath.toString());
-        document.setFileType(file.getContentType());
-        document.setUserId(userId);
+        document.setStudentId(student_id);
 
         documentRepository.save(document);
 
