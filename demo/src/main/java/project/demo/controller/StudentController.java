@@ -146,7 +146,7 @@ public class StudentController {
         model.addAttribute("applications", java.util.List.of());
         return "student/application-list";
     }
-
+    
     @GetMapping("/evaluations")
     public String evaluations(Model model) {
         model.addAttribute("evaluations", java.util.List.of());

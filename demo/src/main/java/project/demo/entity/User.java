@@ -31,7 +31,7 @@ public class User {
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
     @JsonIgnore
     private Set<UserRole> userRoles = new HashSet<>();
-
+    
     public User() {
     }
 
