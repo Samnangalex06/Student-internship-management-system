@@ -32,6 +32,6 @@ public class AdminInitializer {
 
         userService.createUserWithRole(admin, RoleName.ADMIN);
 
-        System.out.println("✅ ADMIN user created");
+        System.out.println(" ADMIN user created");
     }
 }

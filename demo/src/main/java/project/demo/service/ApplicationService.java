@@ -79,12 +79,4 @@ public class ApplicationService {
             return applicationRepository.save(app);
         }).orElse(null);
     }
-    //update status application
-    public Optional<Application> updateStatus(Integer id, ApplicationStatus status) {
-    return applicationRepository.findById(id).map(app -> {
-        app.setStatus(status);
-        return applicationRepository.save(app);
-    });
-}
-
 }
