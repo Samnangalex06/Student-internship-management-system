@@ -5,8 +5,8 @@ import project.demo.entity.Evaluation;
 
 import java.util.List;
 
-public interface EvaluationRepository extends JpaRepository<Evaluation, Long> {
+public interface EvaluationRepository extends JpaRepository<Evaluation, Integer> {
 
-    List<Evaluation> findByApplication_Id(Long applicationId);
+    List<Evaluation> findByApplication_Id(Integer applicationId);
 
 }

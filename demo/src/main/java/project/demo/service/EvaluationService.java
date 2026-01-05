@@ -17,20 +17,19 @@ public class EvaluationService {
         return evaluationRepository.save(evaluation);
     }
 
-    public Evaluation updateEvaluation(Long id, Evaluation evaluation) {
+    public Evaluation updateEvaluation(Integer id, Evaluation evaluation) {
         Evaluation existing = evaluationRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Evaluation not found"));
 
-        existing.setScore(evaluation.getScore());
         existing.setComment(evaluation.getComment());
         return evaluationRepository.save(existing);
     }
 
-    public void deleteEvaluation(Long id) {
+    public void deleteEvaluation(Integer id) {
         evaluationRepository.deleteById(id);
     }
 
-    public List<Evaluation> getByApplication(Long applicationId) {
+    public List<Evaluation> getByApplication(Integer applicationId) {
         return evaluationRepository.findByApplication_Id(applicationId);
     }
 }

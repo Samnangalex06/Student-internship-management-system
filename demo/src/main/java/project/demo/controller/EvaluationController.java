@@ -26,19 +26,19 @@ public class EvaluationController {
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('SUPERVISOR')")
     public Evaluation updateEvaluation(
-            @PathVariable Long id,
+            @PathVariable Integer id,
             @Valid @RequestBody Evaluation evaluation) {
         return evaluationService.updateEvaluation(id, evaluation);
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('SUPERVISOR')")
-    public void deleteEvaluation(@PathVariable Long id) {
+    public void deleteEvaluation(@PathVariable Integer id) {
         evaluationService.deleteEvaluation(id);
     }
 
     @GetMapping("/application/{applicationId}")
-    public List<Evaluation> getByApplication(@PathVariable Long applicationId) {
+    public List<Evaluation> getByApplication(@PathVariable Integer applicationId) {
         return evaluationService.getByApplication(applicationId);
     }
 }

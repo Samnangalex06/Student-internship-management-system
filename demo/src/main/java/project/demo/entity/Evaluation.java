@@ -1,38 +1,29 @@
 package project.demo.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
+
 
 @Entity
+@Table(name = "evaluations")
 public class Evaluation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Min(0)
-    @Max(100)
-    private int score;
+    private Integer id;
 
     private String comment;
 
     @ManyToOne
-    @JoinColumn(name = "application_id", nullable = false)
+    @JoinColumn(name = "internship_app_id", nullable = false)
     private Application application;
 
+    @ManyToOne
+    @JoinColumn(name = "supervisor_id", nullable = false)
+    private Supervisor supervisor;
     // getters & setters
 
-    public Long getId() {
+    public int getId() {
         return id;
-    }
-
-    public int getScore() {
-        return score;
-    }
-
-    public void setScore(int score) {
-        this.score = score;
     }
 
     public String getComment() {
@@ -49,5 +40,11 @@ public class Evaluation {
 
     public void setApplication(Application application) {
         this.application = application;
+    }
+    public Supervisor getSupervisor() {
+        return supervisor;
+    }
+    public void setSupervisor(Supervisor supervisor) {
+        this.supervisor = supervisor;
     }
 }
