@@ -29,7 +29,7 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/login").permitAll()
                   .requestMatchers("/api/companies/**").hasAuthority("ADMIN")
-                .requestMatchers("/Admin/**").hasAuthority("ADMIN")
+                .requestMatchers("/admin/**").hasAuthority("ADMIN")
                 .requestMatchers("/supervisor/**").hasAuthority("SUPERVISOR")
                 .requestMatchers("/student/**").hasAuthority("STUDENT")
                 .anyRequest().authenticated()
