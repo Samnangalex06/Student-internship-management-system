@@ -18,7 +18,7 @@ public class Student {
     @Column (name = "email", unique = true)
     private String email;
 
-    @Column(name="study_year")
+    @Column(name="year")
     private Integer year;
 
 

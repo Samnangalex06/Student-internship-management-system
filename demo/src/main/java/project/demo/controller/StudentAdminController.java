@@ -70,6 +70,7 @@ public class StudentAdminController {
     @PostMapping("/delete/{id}")
     public String delete(@PathVariable Integer id) {
         studentService.delete(id);
-        return "redirect:Admin/students";
-    }
+        return "redirect:/admin/students";
+}
+
 }

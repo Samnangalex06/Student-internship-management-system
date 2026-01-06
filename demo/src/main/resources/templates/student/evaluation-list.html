@@ -1,37 +1,43 @@
+<!-- evaluation-list.html (Improved: Added icons to headers and table, striped table, responsive wrapper, consistent header) -->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <title>My Evaluations</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
   <link th:href="@{/css/app.css}" rel="stylesheet">
 </head>
 
-<body class="app-shell">
-<div th:replace="fragments/student-nav :: studentNav"></div>
+<body class="app-shell bg-dark text-light">
+<div th:replace="~{fragments/student-nav :: studentNav}"></div>
 
 <div class="container app-content">
-  <div class="glass p-4">
-    <h3>My Evaluations</h3>
-    <div class="small-muted">Supervisor feedback</div>
+  <div class="glass p-4 rounded-3 shadow-sm bg-dark bg-opacity-75">
+    <div class="d-flex justify-content-between align-items-center">
+      <h3 class="mb-1"><i class="bi bi-award me-2"></i>My Evaluations</h3>
+      <div class="small text-muted">Supervisor feedback</div>
+    </div>
 
-    <hr class="border-light opacity-10 my-4">
+    <hr class="border-secondary opacity-50 my-4">
 
-    <table class="table table-dark table-hover align-middle">
-      <thead>
-        <tr>
-          <th>Application</th>
-          <th>Score</th>
-          <th>Comment</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr th:each="e : ${evaluations}">
-          <td th:text="${e.application.title}"></td>
-          <td th:text="${e.score}"></td>
-          <td th:text="${e.comment}"></td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="table-responsive">
+      <table class="table table-dark table-striped table-hover align-middle">
+        <thead>
+          <tr>
+            <th><i class="bi bi-file-earmark-text me-2"></i>Application</th>
+            <th><i class="bi bi-star-fill me-2"></i>Score</th>
+            <th><i class="bi bi-chat-left-text me-2"></i>Comment</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="e : ${evaluations}">
+            <td th:text="${e.application.title}"></td>
+            <td th:text="${e.score}"></td>
+            <td th:text="${e.comment}"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </div>
 </body>
