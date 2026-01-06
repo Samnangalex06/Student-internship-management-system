@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import project.demo.enums.RoleName;
 
 @Entity
-@Table(name = "roles")
 public class Role {
 
     @Id
@@ -12,10 +11,16 @@ public class Role {
     private Integer id;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "role_name", nullable = false, unique = true)
+    @Column(unique = true, nullable = false)
     private RoleName roleName;
 
+    // REQUIRED by JPA
     public Role() {}
+
+    // REQUIRED for RoleInitializer
+    public Role(RoleName roleName) {
+        this.roleName = roleName;
+    }
 
     public Integer getId() {
         return id;
@@ -29,4 +34,3 @@ public class Role {
         this.roleName = roleName;
     }
 }
-     
