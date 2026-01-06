@@ -21,35 +21,36 @@ public class SecurityConfig {
         this.successHandler = successHandler;
     }
 
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+   @Bean
+public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-        http
-            .csrf(csrf -> csrf.disable())
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/login").permitAll()
-                  .requestMatchers("/api/companies/**").hasAuthority("ADMIN")
-                .requestMatchers("/Admin/**").hasAuthority("ADMIN")
-                .requestMatchers("/supervisor/**").hasAuthority("SUPERVISOR")
-                .requestMatchers("/student/**").hasAuthority("STUDENT")
-                .anyRequest().authenticated()
-            )
-            .formLogin(form -> form
-                .loginPage("/login")
-                .loginProcessingUrl("/login")
-                .usernameParameter("email")
-                .passwordParameter("password")
-                .successHandler(successHandler)
-                .permitAll()
-            )
-            .logout(logout -> logout
+    http
+        .csrf(csrf -> csrf.disable())
+        .authorizeHttpRequests(auth -> auth
+            .requestMatchers("/login").permitAll()
+            .requestMatchers("/api/companies/**").hasAuthority("ADMIN")
+            .requestMatchers("/admin/**").hasAuthority("ADMIN")   // ✅ FIXED
+            .requestMatchers("/supervisor/**").hasAuthority("SUPERVISOR")
+            .requestMatchers("/student/**").hasAuthority("STUDENT")
+            .anyRequest().authenticated()
+        )
+        .formLogin(form -> form
+            .loginPage("/login")
+            .loginProcessingUrl("/login")
+            .usernameParameter("email")
+            .passwordParameter("password")
+            .successHandler(successHandler)
+            .permitAll()
+        )
+        .logout(logout -> logout
             .logoutUrl("/logout")
             .logoutSuccessUrl("/login?logout")
             .invalidateHttpSession(true)
         )
-           .exceptionHandling(exception -> exception
+        .exceptionHandling(exception -> exception
             .accessDeniedPage("/access-denied")
         );
-        return http.build();
-    }
+
+    return http.build();
+}
 }
