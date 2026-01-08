@@ -23,7 +23,6 @@
           Company Form
         </h2>
 
-        <!-- if company.id is null => create, else edit -->
         <form
           th:action="${company.id == null}
                      ? @{/admin/companies/create}
@@ -31,21 +30,34 @@
           th:object="${company}"
           method="post"
         >
+          <!-- Company Name -->
           <div class="mb-3">
             <label class="form-label">Company Name</label>
             <input class="form-control" th:field="*{name}" required />
           </div>
 
+          <!-- Phone Number -->
           <div class="mb-3">
             <label class="form-label">Phone Number</label>
             <input class="form-control" th:field="*{phoneNumber}" required />
           </div>
 
+          <!-- ✅ NEW: Company Address -->
+          <div class="mb-3">
+            <label class="form-label">Company Address</label>
+            <textarea
+              class="form-control"
+              th:field="*{address}"
+              rows="3"
+              required
+            ></textarea>
+          </div>
+
           <div class="d-flex gap-2">
             <button class="btn btn-primary" type="submit">Save</button>
-            <a class="btn btn-outline-light" th:href="@{/admin/companies}"
-              >Cancel</a
-            >
+            <a class="btn btn-outline-light" th:href="@{/admin/companies}">
+              Cancel
+            </a>
           </div>
         </form>
       </div>
