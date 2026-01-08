@@ -8,7 +8,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import project.demo.entity.Application;
-import project.demo.entity.Application.ApplicationStatus;
 import project.demo.entity.Company;
 import project.demo.entity.Supervisor;
 import project.demo.entity.User;

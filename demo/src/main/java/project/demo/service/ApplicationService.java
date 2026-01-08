@@ -1,7 +1,6 @@
 package project.demo.service;
 
 import project.demo.entity.Application;
-import project.demo.entity.Application.ApplicationStatus;
 import project.demo.repository.ApplicationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -82,6 +81,9 @@ public class ApplicationService {
             app.setStatus(Application.ApplicationStatus.REJECTED);
             return applicationRepository.save(app);
         }).orElse(null);
+    }
+    public Application save(Application application) {
+        return applicationRepository.save(application);
     }
 
 }

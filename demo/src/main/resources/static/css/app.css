@@ -323,3 +323,13 @@ a:hover {
   color: #bfdbfe;
 }
 }
+.supervisor-select {
+  background-color: #21262d;
+  color: #e6edf3;
+  border-color: #30363d;
+}
+
+.supervisor-select:focus {
+  border-color: #58a6ff;
+  box-shadow: 0 0 0 0.15rem rgba(88, 166, 255, 0.3);
+}

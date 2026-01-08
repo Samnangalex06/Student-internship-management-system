@@ -1,5 +1,4 @@
 {
-<<<<<<< HEAD
   "configurations": [
     {
       "type": "java",
@@ -13,18 +12,3 @@
     }
   ]
 }
-=======
-    "configurations": [
-        {
-            "type": "java",
-            "name": "Spring Boot-DemoApplication<demo>",
-            "request": "launch",
-            "cwd": "${workspaceFolder}",
-            "mainClass": "project.demo.DemoApplication",
-            "projectName": "demo",
-            "args": "",
-            "envFile": "${workspaceFolder}/.env"
-        }
-    ]
-}
->>>>>>> dac8709e3a64bf486d6b28b8e16bf6094ff4d050

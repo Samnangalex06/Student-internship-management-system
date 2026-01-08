@@ -11,6 +11,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import project.demo.entity.Student;
 import project.demo.entity.Application;
 import project.demo.repository.StudentRepository;
+import project.demo.repository.SupervisorRepository;
 import project.demo.repository.UserRepository;
 import project.demo.repository.CompanyRepository;
 import project.demo.service.ApplicationService;
@@ -33,6 +34,10 @@ public class StudentController {
 
     @Autowired
     private CompanyRepository companyRepository;
+
+    @Autowired
+    private SupervisorRepository supervisorRepository;
+
 
     // Helper to get current logged-in student
     private Student getCurrentStudent() {
@@ -128,23 +133,29 @@ public class StudentController {
         return "student/application-list";
     }
 
-    // ==================== NEW APPLICATION FORM ====================
-    @GetMapping("/applications/new")
-    public String newApplicationForm(Model model) {
-        Student student = getCurrentStudent();
-        if (student == null) {
-            return "redirect:/login";
-        }
+// ==================== NEW APPLICATION FORM ====================
+@GetMapping("/applications/new")
+public String newApplicationForm(Model model) {
 
-        model.addAttribute("application", new Application());
-        model.addAttribute("companies", companyRepository.findAll());
-
-        return "student/application-form";
+    Student student = getCurrentStudent();
+    if (student == null) {
+        return "redirect:/login";
     }
 
+    model.addAttribute("application", new Application());
+    model.addAttribute("companies", companyRepository.findAll());
+
+    // REQUIRED because template uses it
+    model.addAttribute("supervisors", supervisorRepository.findAll());
+    // ↑ replace with real supervisor list when ready
+
+    return "student/application-form";
+}
+
+
     // ==================== VIEW / EDIT SINGLE APPLICATION ====================
-    @GetMapping("/applications/{id}")
-public String viewApplication(@PathVariable Integer id, Model model) {
+    @GetMapping("/applications/{id:\\d+}")
+    public String viewApplication(@PathVariable Integer id, Model model) {
     Student student = getCurrentStudent();
     if (student == null) {
         return "redirect:/login";
@@ -160,7 +171,27 @@ public String viewApplication(@PathVariable Integer id, Model model) {
     model.addAttribute("companies", companyRepository.findAll());
 
     return "student/application-form";
-}
+    }
+    @PostMapping("/applications/save")
+    public String saveApplication(@ModelAttribute Application application) {
+
+        Student student = getCurrentStudent();
+        if (student == null) {
+            return "redirect:/login";
+        }
+
+        // Required fields not coming from form
+        application.setStudentId(student.getId());
+
+        if (application.getStatus() == null) {
+            application.setStatus(Application.ApplicationStatus.PENDING);
+        }
+
+        applicationService.save(application);
+
+        return "redirect:/student/applications";
+    }  
+
 
     // ==================== EVALUATIONS (placeholder) ====================
     @GetMapping("/evaluations")
