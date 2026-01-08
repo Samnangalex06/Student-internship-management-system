@@ -4,20 +4,25 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+
+import project.demo.service.DocumentService;
+import project.demo.repository.SupervisorRepository;
 import project.demo.entity.Student;
 import project.demo.entity.Application;
 import project.demo.repository.StudentRepository;
-import project.demo.repository.SupervisorRepository;
 import project.demo.repository.UserRepository;
 import project.demo.repository.CompanyRepository;
 import project.demo.service.ApplicationService;
-
+import project.demo.entity.Document;
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
+
 
 @Controller
 @RequestMapping("/student")
@@ -36,8 +41,10 @@ public class StudentController {
     private CompanyRepository companyRepository;
 
     @Autowired
-    private SupervisorRepository supervisorRepository;
+    private DocumentService documentService;
 
+    @Autowired
+    private SupervisorRepository supervisorRepository;
 
     // Helper to get current logged-in student
     private Student getCurrentStudent() {
@@ -132,11 +139,8 @@ public class StudentController {
 
         return "student/application-list";
     }
-
-// ==================== NEW APPLICATION FORM ====================
-@GetMapping("/applications/new")
-public String newApplicationForm(Model model) {
-
+    @GetMapping("/applications/new")
+    public String newApplicationForm(Model model) {
     Student student = getCurrentStudent();
     if (student == null) {
         return "redirect:/login";
@@ -144,53 +148,69 @@ public String newApplicationForm(Model model) {
 
     model.addAttribute("application", new Application());
     model.addAttribute("companies", companyRepository.findAll());
-
-    // REQUIRED because template uses it
     model.addAttribute("supervisors", supervisorRepository.findAll());
-    // ↑ replace with real supervisor list when ready
-
-    return "student/application-form";
-}
-
-
-    // ==================== VIEW / EDIT SINGLE APPLICATION ====================
-    @GetMapping("/applications/{id:\\d+}")
-    public String viewApplication(@PathVariable Integer id, Model model) {
-    Student student = getCurrentStudent();
-    if (student == null) {
-        return "redirect:/login";
-    }
-
-    Application app = applicationService.getById(id);
-
-    if (app == null || !app.getStudentId().equals(student.getId())) {
-        return "redirect:/student/applications";
-    }
-
-    model.addAttribute("application", app);
-    model.addAttribute("companies", companyRepository.findAll());
 
     return "student/application-form";
     }
+
+
     @PostMapping("/applications/save")
-    public String saveApplication(@ModelAttribute Application application) {
+    public String saveApplication(
+            @ModelAttribute Application application,
+            @RequestParam(value = "documents", required = false) MultipartFile[] documents
+    ) throws IOException {
 
         Student student = getCurrentStudent();
         if (student == null) {
             return "redirect:/login";
         }
 
-        // Required fields not coming from form
         application.setStudentId(student.getId());
 
         if (application.getStatus() == null) {
             application.setStatus(Application.ApplicationStatus.PENDING);
         }
 
-        applicationService.save(application);
+        Application savedApplication =
+                applicationService.createApplication(application);
+
+         if (documents != null && documents.length > 0) {
+        documentService.saveDocuments(
+                documents,
+                student,
+                savedApplication
+        );
+    }
 
         return "redirect:/student/applications";
-    }  
+    }
+    @GetMapping("/applications/{id:\\d+}")
+    public String viewApplication(@PathVariable Integer id, Model model) {
+
+        Student student = getCurrentStudent();
+        if (student == null) {
+            return "redirect:/login";
+        }
+
+        Application app = applicationService.getById(id);
+
+        if (app == null || !app.getStudentId().equals(student.getId())) {
+            return "redirect:/student/applications";
+        }
+
+        model.addAttribute("application", app);
+        model.addAttribute("companies", companyRepository.findAll());
+        model.addAttribute("supervisors", supervisorRepository.findAll());
+
+        model.addAttribute(
+                "documents",
+                documentService.getDocumentsByApplication(app)
+        );
+
+        return "student/application-form";
+    }
+
+
 
 
     // ==================== EVALUATIONS (placeholder) ====================

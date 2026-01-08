@@ -115,6 +115,26 @@
             Supported: PDF, Word, Images. You can upload multiple files (resume, cover letter, etc.)
           </small>
         </div>
+      <!-- Uploaded Documents -->
+      <div class="col-12 mt-3"
+          th:if="${documents != null and !documents.isEmpty()}">
+
+        <label class="form-label">
+          <i class="bi bi-paperclip me-2"></i>Uploaded Documents
+        </label>
+
+        <ul class="list-group">
+          <li class="list-group-item bg-dark text-light"
+              th:each="doc : ${documents}">
+            <i class="bi bi-file-earmark me-2"></i>
+            <a th:href="@{'/' + ${doc.filePath}}"
+              th:text="${doc.fileName}"
+              class="text-info"
+              target="_blank"></a>
+          </li>
+        </ul>
+      </div>
+
 
         <!-- Submit Button & Edit Lock -->
         <div class="col-12">
