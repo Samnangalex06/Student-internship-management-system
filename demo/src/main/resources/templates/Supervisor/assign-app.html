@@ -36,15 +36,14 @@
                 <tbody>
                     <!-- Loop over pending applications -->
                     <tr th:each="app : ${applications}">
-                        <td th:text="${app.id}">1</td>
-                        <td th:text="${app.student?.fullName}">Student Name</td>
-                        <td th:text="${app.title}">Application Title</td>
-                        <td th:text="${app.description}">Application Description</td>
-
-                        <!-- Company assignment dropdown -->
-                        <td>
-                            <form th:action="@{/supervisor/assign-app}" method="post" class="d-flex gap-2">
-                                <input type="hidden" name="applicationId" th:value="${app.id}" />
+                        <form th:action="@{/supervisor/assign-app}" method="post">
+                            <input type="hidden" name="applicationId" th:value="${app.id}" />
+                            
+                            <td th:text="${app.id}">1</td>
+                            <td th:text="${app.student?.fullName}">Student Name</td>
+                            <td th:text="${app.title}">Application Title</td>
+                            <td th:text="${app.description}">Application Description</td>
+                            <td>
                                 <select name="companyId" class="form-select" required>
                                     <option value="">Select company</option>
                                     <option th:each="c : ${companies}" 
@@ -52,17 +51,16 @@
                                             th:text="${c.name}">
                                     </option>
                                 </select>
-                        </td>
-
-                        <!-- Assign & Approve button -->
-                        <td>
+                            </td>
+                            <td>
                                 <button type="submit" class="btn btn-success btn-sm"
-                                        th:disabled="${app.status != 'PENDING'}">
+                                        >
                                     Assign & Approve
                                 </button>
-                            </form>
-                        </td>
+                            </td>
+                        </form>
                     </tr>
+
 
                     <!-- If no pending applications -->
                     <tr th:if="${#lists.isEmpty(applications)}">

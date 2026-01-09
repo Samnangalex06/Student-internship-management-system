@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
 
 
 
+
 @Controller
 @RequestMapping("/supervisor")
 public class SupervisorController {
@@ -71,7 +72,9 @@ public class SupervisorController {
         // Get applications supervised by this supervisor
         List<Application> apps =
                 applicationService.getApplicationsBySupervisor(supervisor.getId());
-
+        List<Application> pendingApps = applicationRepository
+            .findBySupervisorIdAndStatus(supervisor.getId(),ApplicationStatus.PENDING);
+        model.addAttribute("recentApplications", pendingApps);
         // Sort by created date (latest first)
         apps = apps.stream()
                 .sorted(Comparator.comparing(
@@ -106,12 +109,21 @@ public class SupervisorController {
     }
 
     // =========================
+    // Accept Application
+    // =========================
+    @PostMapping("/applications/{id}/accept")
+    public String acceptApplication(@PathVariable Integer id) {
+        applicationService.approveApplication(id);
+        return "redirect:/supervisor/dashboard";
+    }
+
+    // =========================
     // Reject Application
     // =========================
     @PostMapping("/applications/{id}/reject")
     public String rejectApplication(@PathVariable Integer id) {
         applicationService.rejectApplication(id);
-        return "redirect:/Supervisor/dashboard";
+        return "redirect:/supervisor/dashbord";
     }
 
     // =========================
