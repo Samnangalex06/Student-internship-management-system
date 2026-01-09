@@ -18,4 +18,5 @@ public interface ApplicationRepository extends JpaRepository<Application, Intege
 
     List<Application> findBySupervisorId(Integer supervisorId);
     List<Application> findByStatus(Application.ApplicationStatus status);
+    List<Application> findBySupervisorIdAndStatus(Integer supervisorId, Application.ApplicationStatus status);
 }
