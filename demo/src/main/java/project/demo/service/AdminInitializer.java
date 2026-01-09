@@ -26,12 +26,12 @@ public class AdminInitializer {
 
         User admin = new User();
         admin.setEmail("admin@gmail.com");
-        admin.setUsername("Admin");
+        admin.setUsername("admin");
         admin.setPassword("123");
         admin.setEnable(true);
 
         userService.createUserWithRole(admin, RoleName.ADMIN);
 
-        System.out.println("✅ ADMIN user created");
+        System.out.println(" ADMIN user created");
     }
 }

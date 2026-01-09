@@ -11,27 +11,33 @@ public class Application {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(nullable = false)
+    // ---------- FOREIGN KEYS (IDS ONLY) ----------
+    @Column(name = "student_id", nullable = false)
     private Integer studentId;
 
-    @Column(nullable = false)
+    @Column(name = "company_id", nullable = false)
     private Integer companyId;
 
-    @Column(nullable = false)
+    @Column(name = "supervisor_id")
     private Integer supervisorId;
 
-
-    @Enumerated(EnumType.STRING)
+    // ---------- FORM FIELD (WAS MISSING) ----------
     @Column(nullable = false)
-    private ApplicationStatus status = ApplicationStatus.PENDING;
+    private String title;
 
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    @Column(nullable = false, updatable = false)
+    // ---------- STATUS ----------
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private ApplicationStatus status = ApplicationStatus.PENDING;
+
+    // ---------- TIMESTAMPS ----------
+    @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
-    @Column(nullable = false)
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
     // ---------- JPA LIFECYCLE ----------
@@ -47,55 +53,23 @@ public class Application {
     }
 
     // ---------- GETTERS ----------
-    public Integer getId() {
-        return id;
-    }
-
-    public Integer getStudentId() {
-        return studentId;
-    }
-
-    public Integer getCompanyId() {
-        return companyId;
-    }
-    public Integer getSupervisorId(){
-        return supervisorId;
-    }
-
-    public ApplicationStatus getStatus() {
-        return status;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
+    public Integer getId() { return id; }
+    public Integer getStudentId() { return studentId; }
+    public Integer getCompanyId() { return companyId; }
+    public Integer getSupervisorId() { return supervisorId; }
+    public String getTitle() { return title; }
+    public String getDescription() { return description; }
+    public ApplicationStatus getStatus() { return status; }
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public LocalDateTime getUpdatedAt() { return updatedAt; }
 
     // ---------- SETTERS ----------
-    public void setStudentId(Integer studentId) {
-        this.studentId = studentId;
-    }
-
-    public void setCompanyId(Integer companyId) {
-        this.companyId = companyId;
-    }
-    public void setSupervisorId(Integer supervisorId) {
-        this.supervisorId=supervisorId;
-    }
-    public void setStatus(ApplicationStatus status) {
-        this.status = status;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
+    public void setStudentId(Integer studentId) { this.studentId = studentId; }
+    public void setCompanyId(Integer companyId) { this.companyId = companyId; }
+    public void setSupervisorId(Integer supervisorId) { this.supervisorId = supervisorId; }
+    public void setTitle(String title) { this.title = title; }
+    public void setDescription(String description) { this.description = description; }
+    public void setStatus(ApplicationStatus status) { this.status = status; }
 
     // ---------- ENUM ----------
     public enum ApplicationStatus {

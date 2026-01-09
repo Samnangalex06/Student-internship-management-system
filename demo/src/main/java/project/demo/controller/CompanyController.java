@@ -39,4 +39,15 @@ public class CompanyController {
     public void deleteCompany(@PathVariable Integer id) {
         companyRepository.deleteById(id);
     }
+
+ 
+
+
+
+
+
+
 }
+
+
+// original
