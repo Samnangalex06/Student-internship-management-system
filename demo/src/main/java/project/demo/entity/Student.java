@@ -75,5 +75,10 @@ public class Student {
     public void setUserId(User userId){
         this.userId= userId;
     }
+
+    public String getName() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getName'");
+    }
     
 }

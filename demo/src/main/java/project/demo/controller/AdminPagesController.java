@@ -3,16 +3,20 @@ package project.demo.controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-
+import project.demo.repository.ApplicationRepository;
 import project.demo.repository.CompanyRepository;
 
 @Controller
 public class AdminPagesController {
 
     private final CompanyRepository companyRepository;
+    private final ApplicationRepository applicationRepository;
 
-    public AdminPagesController(CompanyRepository companyRepository) {
+    public AdminPagesController(
+            CompanyRepository companyRepository,
+            ApplicationRepository applicationRepository) {
         this.companyRepository = companyRepository;
+        this.applicationRepository = applicationRepository;
     }
 
     @GetMapping("/admin/dashboard")
@@ -24,9 +28,14 @@ public class AdminPagesController {
         return "Admin/admin-dashboard";
     }
 
-    @GetMapping("/admin/assign-supervisor")
-    public String assignSupervisor() {
-        return "Admin/assign-supervisor";
+    // ✅ THIS MUST MATCH: templates/Admin/application.html
+    @GetMapping("/admin/applications")
+    public String applications(Model model) {
+        model.addAttribute(
+                "applications",
+                applicationRepository.findAll()
+        );
+        return "Admin/application";
     }
 
     @GetMapping("/admin/approvals")
@@ -36,7 +45,7 @@ public class AdminPagesController {
 
     @GetMapping("/admin/companies")
     public String companies(Model model) {
-        model.addAttribute("companies", companyRepository.findAll()); // ✅ load from DB
+        model.addAttribute("companies", companyRepository.findAll());
         return "Admin/companies";
     }
 }
