@@ -77,4 +77,20 @@ public class Application {
         APPROVED,
         REJECTED
     }
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "student_id", insertable = false, updatable = false)
+    private Student student;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "company_id", insertable = false, updatable = false)
+    private Company company;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "supervisor_id", insertable = false, updatable = false)
+    private Supervisor supervisor;
+
+    // Add getters
+    public Student getStudent() { return student; }
+    public Company getCompany() { return company; }
+    public Supervisor getSupervisor() { return supervisor; }
 }
