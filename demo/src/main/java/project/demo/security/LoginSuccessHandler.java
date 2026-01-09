@@ -31,6 +31,12 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
             return;
         }
 
-        response.sendRedirect("/student/dashboard");
+        if (authentication.getAuthorities()
+                .contains(new SimpleGrantedAuthority("STUDENT"))) {
+            response.sendRedirect("/student/dashboard");
+            return;
+        }
+
+        response.sendRedirect("/home");
     }
 }

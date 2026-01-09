@@ -27,7 +27,7 @@ public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     http
         .csrf(csrf -> csrf.disable())
         .authorizeHttpRequests(auth -> auth
-            .requestMatchers("/login").permitAll()
+            .requestMatchers("/login", "/css/**", "/js/**", "/images/**", "/favicon.ico").permitAll()
             .requestMatchers("/api/companies/**").hasAuthority("ADMIN")
             .requestMatchers("/admin/**").hasAuthority("ADMIN")   
             .requestMatchers("/supervisor/**").hasAuthority("SUPERVISOR")
