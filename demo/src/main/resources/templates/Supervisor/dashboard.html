@@ -10,11 +10,12 @@
 </head>
 
 <body class="app-shell">
+     <div th:replace="fragments/supervisor-nav :: SupervisorNv"></div>
 <div class="container app-content mt-4">
-    <div th:replace="fragments/supervisor-nav :: SupervisorNv"></div>
+   
 
     <div class="glass p-4 mb-4">
-        <h3 class="mb-1">Welcome,
+        <h3 class="mb-1">Welcome
             <span th:text="${supervisor.fullName}">Supervisor</span>
         </h3>
         <div class="small-muted">Supervisor dashboard overview</div>

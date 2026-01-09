@@ -8,6 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import project.demo.entity.Application;
+import project.demo.entity.Application.ApplicationStatus;
 import project.demo.entity.Company;
 import project.demo.entity.Supervisor;
 import project.demo.entity.User;
@@ -21,6 +22,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+
 
 @Controller
 @RequestMapping("/supervisor")
@@ -37,6 +40,12 @@ public class SupervisorController {
 
     @Autowired
     private CompanyRepository companyRepository;
+
+    @Autowired
+    private project.demo.service.CompanyService companyService;
+
+    @Autowired
+    private project.demo.repository.ApplicationRepository applicationRepository;
 
     // =========================
     // Supervisor Dashboard
@@ -97,20 +106,36 @@ public class SupervisorController {
     }
 
     // =========================
-    // Accept Application
-    // =========================
-    @PostMapping("/applications/{id}/accept")
-    public String acceptApplication(@PathVariable Integer id) {
-        applicationService.approveApplication(id);
-        return "redirect:/supervisor/dashboard";
-    }
-
-    // =========================
     // Reject Application
     // =========================
     @PostMapping("/applications/{id}/reject")
     public String rejectApplication(@PathVariable Integer id) {
         applicationService.rejectApplication(id);
-        return "redirect:/supervisor/dashboard";
+        return "redirect:/Supervisor/dashboard";
     }
+
+    // =========================
+    // Supervisor Assign Applications
+    // ========================
+        // Show pending applications page
+        @GetMapping("/assign-app")
+        public String showAssignApplications(Model model) {
+        List<Application> applications = applicationRepository.findByStatus(Application.ApplicationStatus.PENDING);
+        List<Company> companies = companyService.getAll();
+        model.addAttribute("applications", applications);
+        model.addAttribute("companies", companies);
+        return "Supervisor/assign-app"; // Thymeleaf template name
+        }
+
+        // Handle form submission
+        @PostMapping("/assign-app")
+        public String assignAndApprove(@RequestParam Integer applicationId,
+                                @RequestParam Integer companyId) {
+        applicationService.assignCompanyAndApprove(applicationId, companyId);
+        return "redirect:/supervisor/assign-app"; // reload the page
+        }
+
+
+    
+
 }
