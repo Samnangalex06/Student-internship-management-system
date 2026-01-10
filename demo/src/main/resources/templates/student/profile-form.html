@@ -1,4 +1,3 @@
-<!-- profile-form.html (Improved: Added icons to labels and buttons, full form validation, consistent dark inputs, messages with icons) -->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -10,55 +9,84 @@
   <link th:href="@{/css/app.css}" rel="stylesheet">
 </head>
 
-<body class="app-shell bg-dark text-light">
+<body class="app-shell">
+
+<!-- Student Navbar -->
 <div th:replace="~{fragments/student-nav :: studentNav}"></div>
 
 <div class="container app-content">
-  <div class="glass p-4 rounded-3 shadow-sm bg-dark bg-opacity-75">
+  <div class="glass p-4">
 
     <!-- Header -->
     <div class="d-flex justify-content-between align-items-center">
       <div>
-        <h3 class="mb-1"><i class="bi bi-person-circle me-2"></i>My Profile</h3>
-        <div class="small text-muted">Update your personal information</div>
+        <h3 class="mb-1">My Profile</h3>
+        <div class="small-muted">Update your personal information</div>
       </div>
-      <span class="badge bg-secondary">Student</span>
+      <span class="badge badge-soft">Student</span>
     </div>
 
-    <hr class="border-secondary opacity-50 my-4">
+    <hr class="border-light opacity-10 my-4">
 
     <!-- Form -->
-    <form th:action="@{/student/profile/save}" method="post" th:object="${student}" class="row g-3 needs-validation" novalidate>
+    <form th:action="@{/student/profile/save}"
+          method="post"
+          th:object="${student}"
+          class="row g-3">
 
+      <!-- Full Name -->
       <div class="col-md-6">
-        <label class="form-label"><i class="bi bi-person me-2"></i>Full Name</label>
-        <input class="form-control bg-dark text-light border-secondary" th:field="*{name}" placeholder="Your name" required>
-        <div class="invalid-feedback">Please enter your name.</div>
+        <label class="form-label">Full Name</label>
+        <input class="form-control"
+               th:field="*{fullName}"
+               placeholder="Your name"
+               required>
       </div>
 
+      <!-- Email -->
       <div class="col-md-6">
-        <label class="form-label"><i class="bi bi-envelope me-2"></i>Email Address</label>
-        <input type="email" class="form-control bg-dark text-light border-secondary" th:field="*{email}" placeholder="you@email.com" required>
-        <div class="invalid-feedback">Please enter a valid email.</div>
+        <label class="form-label">Email Address</label>
+        <input type="email"
+               class="form-control"
+               th:field="*{email}"
+               placeholder="you@email.com"
+               required>
       </div>
 
+      <!-- Phone Number -->
       <div class="col-md-6">
-        <label class="form-label"><i class="bi bi-phone me-2"></i>Phone Number</label>
-        <input class="form-control bg-dark text-light border-secondary" th:field="*{phone}" placeholder="+855..." required>
-        <div class="invalid-feedback">Please enter a valid phone number.</div>
+        <label class="form-label">Phone Number</label>
+        <input type="text"
+               class="form-control"
+               th:field="*{phoneNumber}"
+               placeholder="+855..."
+               required>
       </div>
 
-      <div class="col-12">
-        <button class="btn btn-primary px-4"><i class="bi bi-save me-2"></i>Save Changes</button>
-        <a th:href="@{/student/dashboard}" class="btn btn-outline-light ms-2"><i class="bi bi-x-circle me-2"></i>Cancel</a>
+      <!-- Actions -->
+      <div class="col-12 mt-3">
+        <button type="submit" class="btn btn-primary btn-sm">
+          Save Changes
+        </button>
+
+        <a th:href="@{/student/dashboard}"
+           class="btn btn-outline-light btn-sm ms-2">
+          Cancel
+        </a>
       </div>
     </form>
 
     <!-- Messages -->
-    <div th:if="${success}" class="alert alert-success mt-4"><i class="bi bi-check-circle me-2"></i>Profile updated successfully.</div>
-    <div th:if="${error}" class="alert alert-danger mt-4"><i class="bi bi-exclamation-triangle me-2"></i>Failed to update profile.</div>
+    <div th:if="${success}" class="alert alert-success mt-4">
+      Profile updated successfully.
+    </div>
+
+    <div th:if="${error}" class="alert alert-danger mt-4">
+      Failed to update profile.
+    </div>
 
   </div>
 </div>
+
 </body>
 </html>
