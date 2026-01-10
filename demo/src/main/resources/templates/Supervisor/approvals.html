@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Supervisor Approvals</title>
+</head>
+<body>
+
+<h2>🧪 Selected Application (DTO)</h2>
+
+<div th:if="${selectedApplication != null}">
+    <p>ID: <span th:text="${selectedApplication.id}"></span></p>
+    <p>Student ID: <span th:text="${selectedApplication.studentId}"></span></p>
+    <p>Student Name: <span th:text="${selectedApplication.studentName}"></span></p>
+    <p>Company ID: <span th:text="${selectedApplication.companyId}"></span></p>
+    <p>Company Name: <span th:text="${selectedApplication.companyName}"></span></p>
+    <p>Supervisor ID: <span th:text="${selectedApplication.supervisorId}"></span></p>
+    <p>Title: <span th:text="${selectedApplication.title}"></span></p>
+    <p>Description: <span th:text="${selectedApplication.description}"></span></p>
+    <p>Status: <span th:text="${selectedApplication.status.name()}"></span></p>
+    <p>Created At:
+        <span th:text="${#dates.format(selectedApplication.createdAt, 'yyyy-MM-dd HH:mm:ss')}"></span>
+    </p>
+</div>
+
+<div th:if="${selectedApplication == null}" style="color:red;">
+    No selected application
+</div>
+
+<hr>
+
+<h2>All Pending Applications</h2>
+
+<table border="1">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Student</th>
+        <th>Company</th>
+        <th>Status</th>
+        <th>Action</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="app : ${pendingApplications}">
+        <td th:text="${app.id}"></td>
+        <td th:text="${app.studentName}"></td>
+        <td th:text="${app.companyName}"></td>
+        <td th:text="${app.status.name()}"></td>
+        <td>
+            <a th:href="@{/supervisor/approvals(id=${app.id})}">
+                View
+            </a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<hr>
+
+<h2>Approve / Reject</h2>
+
+<!-- SAFE FORM (does NOT overwrite DTO) -->
+<form th:action="@{/supervisor/applications/{id}/accept(id=${selectedApplication.id})}"
+      method="post"
+      th:if="${selectedApplication != null}">
+    <button type="submit">Approve</button>
+</form>
+
+<form th:action="@{/supervisor/applications/{id}/reject(id=${selectedApplication.id})}"
+      method="post"
+      th:if="${selectedApplication != null}">
+    <button type="submit">Reject</button>
+</form>
+
+</body>
+</html>
