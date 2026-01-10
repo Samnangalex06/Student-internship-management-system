@@ -163,6 +163,7 @@
                              th:text="${selectedApplication.description}">
                         </div>
                     </div>
+                    
 
                     <!-- ACTIONS -->
                     <div class="action-bar d-flex gap-3">
@@ -181,7 +182,12 @@
                         </form>
                     </div>
                 </div>
-
+                <!-- <div class="mb-4" th:if="${documents != null}">
+                        <div class="small-muted">Application-file</div>
+                        <span class="fw-semibold"
+                            th:text="${documents.fileName}">hell0
+                        </span>
+                    </div> -->
                 <!-- EMPTY STATE -->
                 <div th:unless="${selectedApplication != null}"
                      class="text-center py-5 mt-5">

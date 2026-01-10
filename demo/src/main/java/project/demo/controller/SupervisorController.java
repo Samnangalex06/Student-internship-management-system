@@ -1,5 +1,6 @@
 package project.demo.controller;
 
+import org.attoparser.dom.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -18,6 +19,7 @@ import project.demo.repository.CompanyRepository;
 import project.demo.repository.SupervisorRepository;
 import project.demo.repository.UserRepository;
 import project.demo.service.ApplicationService;
+import project.demo.service.DocumentService;
 
 import java.nio.file.OpenOption;
 import java.util.Comparator;
@@ -47,6 +49,9 @@ public class SupervisorController {
 
     @Autowired
     private project.demo.service.CompanyService companyService;
+
+    @Autowired
+    private DocumentService documentService;
 
     @Autowired
     private project.demo.repository.ApplicationRepository applicationRepository;
@@ -158,7 +163,13 @@ public String approvals(Model model, @RequestParam(required = false) Integer id)
     } else if (!pendingApps.isEmpty()) {
         selectedApp = pendingApps.get(0);
     }
-
+    Integer appId = selectedApp.getId();
+    System.out.println(appId+ "is it nUll" );
+        if (appId != null) {
+        Application app = applicationService.getById(appId);
+        
+        model.addAttribute("documents", documentService.getDocumentsByApplication(app));
+        }
     model.addAttribute("selectedApplication", selectedApp);
 
     return "Supervisor/approvals";
