@@ -3,75 +3,200 @@
 <head>
     <meta charset="UTF-8">
     <title>Supervisor Approvals</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link th:href="@{/css/app.css}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <style>
+        .glass {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 18px;
+        }
+
+        /* BASE ITEM */
+        .app-item {
+            background: transparent;
+            border-radius: 10px;
+            padding: 8px 12px;
+            transition: background 0.15s ease, border-left 0.15s ease;
+            border-left: 3px solid transparent;
+        }
+
+        /* HOVER STATE */
+        a:hover .app-item {
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        /* SELECTED (ACTIVE) STATE */
+        .app-item.active {
+            background: rgba(13, 110, 253, 0.25);
+            border-left-color: #0d6efd;
+        }
+
+        /* Optional: hover on active (slightly stronger) */
+        a:hover .app-item.active {
+            background: rgba(13, 110, 253, 0.32);
+        }
+
+        .small-muted {
+            color: rgba(255,255,255,0.6);
+            font-size: 0.85rem;
+        }
+
+        .info-box {
+            background: rgba(0,0,0,0.35);
+            border-radius: 12px;
+            padding: 14px;
+        }
+
+        .action-bar {
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 24px;
+            margin-top: 32px;
+        }
+    </style>
 </head>
-<body>
 
-<h2>🧪 Selected Application (DTO)</h2>
+<body class="app-shell">
 
-<div th:if="${selectedApplication != null}">
-    <p>ID: <span th:text="${selectedApplication.id}"></span></p>
-    <p>Student ID: <span th:text="${selectedApplication.studentId}"></span></p>
-    <p>Student Name: <span th:text="${selectedApplication.studentName}"></span></p>
-    <p>Company ID: <span th:text="${selectedApplication.companyId}"></span></p>
-    <p>Company Name: <span th:text="${selectedApplication.companyName}"></span></p>
-    <p>Supervisor ID: <span th:text="${selectedApplication.supervisorId}"></span></p>
-    <p>Title: <span th:text="${selectedApplication.title}"></span></p>
-    <p>Description: <span th:text="${selectedApplication.description}"></span></p>
-    <p>Status: <span th:text="${selectedApplication.status.name()}"></span></p>
-    <p>Created At:
-        <span th:text="${#dates.format(selectedApplication.createdAt, 'yyyy-MM-dd HH:mm:ss')}"></span>
-    </p>
+<div th:replace="fragments/supervisor-nav :: SupervisorNv"></div>
+
+<div class="container app-content mt-4">
+
+    <!-- HEADER -->
+    <div class="glass p-4 mb-4">
+        <h3 class="mb-1">Application Approvals</h3>
+        <div class="small-muted">
+            Review internship applications assigned to you
+        </div>
+    </div>
+
+    <div class="row g-4">
+
+        <!-- LEFT PANEL -->
+        <div class="col-lg-5 col-md-5">
+            <div class="glass p-3 h-full">
+                <h5 class="mb-3">Pending Applications</h5>
+
+                <div class="d-flex flex-column gap-1">
+
+                    <a th:each="app : ${pendingApplications}"
+                       th:href="@{/supervisor/approvals(id=${app.id})}"
+                       class="text-decoration-none text-white">
+
+                        <div class="app-item"
+                             th:classappend="${selectedApplication != null and selectedApplication.id == app.id} ? ' active'">
+
+                            <div class="d-flex justify-content-between align-items-start">
+                                <h6 class="mb-1 text-truncate" th:text="${app.title}"></h6>
+                                <span class="badge bg-warning text-dark">PENDING</span>
+                            </div>
+
+                            <div class="small">
+                                <i class="bi bi-person-fill me-1"></i>
+                                <span th:text="${app.studentName}"></span>
+                            </div>
+
+                            <!-- <div class="d-flex justify-content-between small-muted mt-1">
+                                <span>
+                                    <i class="bi bi-building me-1"></i>
+                                    <span th:text="${app.companyName}"></span>
+                                </span>
+                                <span th:text="${#temporals.format(app.createdAt,'dd MMM')}"></span>
+                            </div> -->
+                        </div>
+                    </a>
+
+                    <div th:if="${#lists.isEmpty(pendingApplications)}"
+                         class="text-center py-5 small-muted">
+                        <i class="bi bi-inbox fs-1 d-block mb-3 opacity-50"></i>
+                        No pending applications
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT PANEL -->
+        <div class="col-lg-7 col-md-7">
+            <div class="glass p-4 h-100">
+
+                <div th:if="${selectedApplication != null}">
+
+                    <h5 class="mb-4">Application Details</h5>
+
+                    <h4 th:text="${selectedApplication.title}"></h4>
+                    <div class="small-muted mb-4">
+                        <i class="bi bi-person me-1"></i>
+                        <span th:text="${selectedApplication.studentName}"></span>
+                        &nbsp;•&nbsp;
+                        <i class="bi bi-building me-1"></i>
+                        <span th:text="${selectedApplication.companyName}"></span>
+                    </div>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <div class="info-box">
+                                <div class="small-muted">Status</div>
+                                <span class="badge bg-warning text-dark fs-6"
+                                      th:text="${selectedApplication.status}">
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="info-box">
+                                <div class="small-muted">Submitted</div>
+                                <div class="fw-semibold"
+                                     th:text="${#temporals.format(selectedApplication.createdAt,'dd MMM yyyy – HH:mm')}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <div class="small-muted fw-semibold mb-2">Description</div>
+                        <div class="info-box" style="white-space: pre-wrap;"
+                             th:text="${selectedApplication.description}">
+                        </div>
+                    </div>
+
+                    <!-- ACTIONS -->
+                    <div class="action-bar d-flex gap-3">
+                        <form th:action="@{/supervisor/applications/{id}/accept(id=${selectedApplication.id})}"
+                              method="post">
+                            <button class="btn btn-success btn-lg px-5">
+                                <i class="bi bi-check-circle-fill me-2"></i>Approve
+                            </button>
+                        </form>
+
+                        <form th:action="@{/supervisor/applications/{id}/reject(id=${selectedApplication.id})}"
+                              method="post">
+                            <button class="btn btn-outline-danger btn-lg px-5">
+                                <i class="bi bi-x-circle me-2"></i>Reject
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- EMPTY STATE -->
+                <div th:unless="${selectedApplication != null}"
+                     class="text-center py-5 mt-5">
+                    <i class="bi bi-arrow-left-circle fs-1 opacity-50 mb-4 d-block"></i>
+                    <h5 class="text-muted">Select an application</h5>
+                    <p class="small-muted">
+                        Choose an application from the left panel to review
+                    </p>
+                </div>
+
+            </div>
+        </div>
+    </div>
 </div>
 
-<div th:if="${selectedApplication == null}" style="color:red;">
-    No selected application
-</div>
-
-<hr>
-
-<h2>All Pending Applications</h2>
-
-<table border="1">
-    <thead>
-    <tr>
-        <th>ID</th>
-        <th>Student</th>
-        <th>Company</th>
-        <th>Status</th>
-        <th>Action</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="app : ${pendingApplications}">
-        <td th:text="${app.id}"></td>
-        <td th:text="${app.studentName}"></td>
-        <td th:text="${app.companyName}"></td>
-        <td th:text="${app.status.name()}"></td>
-        <td>
-            <a th:href="@{/supervisor/approvals(id=${app.id})}">
-                View
-            </a>
-        </td>
-    </tr>
-    </tbody>
-</table>
-
-<hr>
-
-<h2>Approve / Reject</h2>
-
-<!-- SAFE FORM (does NOT overwrite DTO) -->
-<form th:action="@{/supervisor/applications/{id}/accept(id=${selectedApplication.id})}"
-      method="post"
-      th:if="${selectedApplication != null}">
-    <button type="submit">Approve</button>
-</form>
-
-<form th:action="@{/supervisor/applications/{id}/reject(id=${selectedApplication.id})}"
-      method="post"
-      th:if="${selectedApplication != null}">
-    <button type="submit">Reject</button>
-</form>
-
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

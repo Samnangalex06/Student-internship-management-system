@@ -131,69 +131,38 @@ public class SupervisorController {
     // Supervisor Assign Applications
     // ========================
 
-        @GetMapping("/approvals")
-                public String approvals(Model model, @RequestParam(required = false) Integer id) {
+       @GetMapping("/approvals")
+public String approvals(Model model, @RequestParam(required = false) Integer id) {
 
-                Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-                String email = auth != null ? auth.getName() : null;
+    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    String email = auth != null ? auth.getName() : null;
 
-                if (email == null) return "redirect:/login";
+    if (email == null) return "redirect:/login";
 
-                User user = userRepo.findByEmailWithRoles(email).orElseThrow();
-                Supervisor supervisor = supervisorRepository.findByUserId(user.getId()).orElseThrow();
+    User user = userRepo.findByEmailWithRoles(email).orElseThrow();
+    Supervisor supervisor = supervisorRepository.findByUserId(user.getId()).orElseThrow();
 
-                List<ApplicationDTO> pendingApps = applicationRepository.findPendingWithDetails(
-                supervisor.getId(), Application.ApplicationStatus.PENDING).stream().map(a -> new ApplicationDTO(
-                                a.getId(),
-                                a.getStudentId(),
-                                a.getStudentName(),
-                                a.getCompanyId(),
-                                a.getCompanyName(),
-                                a.getSupervisorId(),
-                                a.getTitle(),
-                                a.getDescription(),
-                                a.getStatus(),
-                                a.getCreatedAt()
-                        )).collect(Collectors.toList());
+    // get pending DTOs
+    List<ApplicationDTO> pendingApps = applicationRepository.findPendingWithDetails(
+        supervisor.getId(), Application.ApplicationStatus.PENDING);
 
-                model.addAttribute("pendingApplications", pendingApps);
+    model.addAttribute("pendingApplications", pendingApps);
 
-                ApplicationDTO selectedApp = null;
+    // select first application if id not provided
+    ApplicationDTO selectedApp = null;
+    if (id != null) {
+        selectedApp = pendingApps.stream()
+                .filter(a -> a.getId().equals(id))
+                .findFirst()
+                .orElse(null);
+    } else if (!pendingApps.isEmpty()) {
+        selectedApp = pendingApps.get(0);
+    }
 
-                        if (id != null) {
-                        selectedApp = pendingApps.stream()
-                                .filter(a -> a.getId().equals(id))
-                                .findFirst()
-                                .orElse(null);
-                        }
-                        if (selectedApp == null && !pendingApps.isEmpty()) {
-                        selectedApp = pendingApps.get(0); // default to first pending
-                        if (selectedApp != null) {
-                        System.out.println("🧪 Selected Application (DTO)");
-                        System.out.println("ID: " + selectedApp.getId());
-                        System.out.println("Student ID: " + selectedApp.getStudentId());
-                        System.out.println("Student Name: " + selectedApp.getStudentName());
-                        System.out.println("Company ID: " + selectedApp.getCompanyId());
-                        System.out.println("Company Name: " + selectedApp.getCompanyName());
-                        System.out.println("Supervisor ID: " + selectedApp.getSupervisorId());
-                        System.out.println("Title: " + selectedApp.getTitle());
-                        System.out.println("Description: " + selectedApp.getDescription());
-                        System.out.println("Status: " + selectedApp.getStatus());
-                        System.out.println("Created At: " + selectedApp.getCreatedAt());
-                        } else {
-                        System.out.println("No selected application found!");
-                        }
-                        // System.out.println(pendingApps.get(0));
-                        }
-                // System.out.println("Pending apps count: " + pendingApps.size());
-                // pendingApps.forEach(a -> System.out.println(a.getId() + " | " + a.getStudentName()));
+    model.addAttribute("selectedApplication", selectedApp);
 
-
-                model.addAttribute("application", selectedApp);
-
-                return "Supervisor/approvals";
-        }
-
+    return "Supervisor/approvals";
+}
 
     
         // Show pending applications page
