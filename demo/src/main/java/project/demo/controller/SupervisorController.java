@@ -16,15 +16,15 @@ import project.demo.entity.Supervisor;
 import project.demo.entity.User;
 
 import project.demo.repository.CompanyRepository;
+import project.demo.repository.DocumentRepository;
 import project.demo.repository.SupervisorRepository;
 import project.demo.repository.UserRepository;
 import project.demo.service.ApplicationService;
-import project.demo.service.DocumentService;
 
-import java.nio.file.OpenOption;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -51,7 +51,8 @@ public class SupervisorController {
     private project.demo.service.CompanyService companyService;
 
     @Autowired
-    private DocumentService documentService;
+    private DocumentRepository doc_Repository;
+
 
     @Autowired
     private project.demo.repository.ApplicationRepository applicationRepository;
@@ -163,13 +164,9 @@ public String approvals(Model model, @RequestParam(required = false) Integer id)
     } else if (!pendingApps.isEmpty()) {
         selectedApp = pendingApps.get(0);
     }
-    Integer appId = selectedApp.getId();
-    System.out.println(appId+ "is it nUll" );
-        if (appId != null) {
-        Application app = applicationService.getById(appId);
-        
-        model.addAttribute("documents", documentService.getDocumentsByApplication(app));
-        }
+    
+        List<project.demo.entity.Document> docs = doc_Repository.findByApplicationId(selectedApp.getId());
+        model.addAttribute("documents", docs);
     model.addAttribute("selectedApplication", selectedApp);
 
     return "Supervisor/approvals";

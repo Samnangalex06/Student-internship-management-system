@@ -9,14 +9,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
     <style>
-        .glass {
-            background: rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            border-radius: 18px;
-        }
-
-        /* BASE ITEM */
+        /* LEFT PANEL */
         .app-item {
             background: transparent;
             border-radius: 10px;
@@ -25,37 +18,30 @@
             border-left: 3px solid transparent;
         }
 
-        /* HOVER STATE */
         a:hover .app-item {
-            background: rgba(255, 255, 255, 0.08);
+            background: rgba(255,255,255,0.08);
         }
 
-        /* SELECTED (ACTIVE) STATE */
         .app-item.active {
-            background: rgba(13, 110, 253, 0.25);
+            background: rgba(13,110,253,0.25);
             border-left-color: #0d6efd;
         }
 
-        /* Optional: hover on active (slightly stronger) */
         a:hover .app-item.active {
-            background: rgba(13, 110, 253, 0.32);
+            background: rgba(13,110,253,0.32);
         }
 
-        .small-muted {
-            color: rgba(255,255,255,0.6);
-            font-size: 0.85rem;
-        }
-
+        /* RIGHT PANEL */
         .info-box {
             background: rgba(0,0,0,0.35);
             border-radius: 12px;
-            padding: 14px;
+            padding: 12px;
         }
 
         .action-bar {
             border-top: 1px solid rgba(255,255,255,0.1);
-            padding-top: 24px;
-            margin-top: 32px;
+            padding-top: 16px;
+            margin-top: 16px;
         }
     </style>
 </head>
@@ -65,48 +51,34 @@
 <div th:replace="fragments/supervisor-nav :: SupervisorNv"></div>
 
 <div class="container app-content mt-4">
-
-    <!-- HEADER -->
-    <div class="glass p-4 mb-4">
-        <h3 class="mb-1">Application Approvals</h3>
-        <div class="small-muted">
-            Review internship applications assigned to you
-        </div>
-    </div>
-
     <div class="row g-4">
 
         <!-- LEFT PANEL -->
-        <div class="col-lg-5 col-md-5">
-            <div class="glass p-3 h-full">
+        <div class="col-lg-4 col-md-5">
+            <div class="glass p-3 h-100">
                 <h5 class="mb-3">Pending Applications</h5>
 
-                <div class="d-flex flex-column gap-1">
-
+                <div class="d-flex flex-column gap-2">
                     <a th:each="app : ${pendingApplications}"
                        th:href="@{/supervisor/approvals(id=${app.id})}"
                        class="text-decoration-none text-white">
-
                         <div class="app-item"
-                             th:classappend="${selectedApplication != null and selectedApplication.id == app.id} ? ' active'">
-
-                            <div class="d-flex justify-content-between align-items-start">
+                             th:classappend="${selectedApplication != null && selectedApplication.id == app.id} ? ' active'">
+                            <div class="d-flex justify-content-between">
                                 <h6 class="mb-1 text-truncate" th:text="${app.title}"></h6>
-                                <span class="badge bg-warning text-dark">PENDING</span>
+                                <span class="badge bg-warning" th:text="${app.status}"></span>
                             </div>
-
                             <div class="small">
                                 <i class="bi bi-person-fill me-1"></i>
                                 <span th:text="${app.studentName}"></span>
                             </div>
-
-                            <!-- <div class="d-flex justify-content-between small-muted mt-1">
+                            <div class="d-flex justify-content-between small-muted mt-1">
                                 <span>
                                     <i class="bi bi-building me-1"></i>
                                     <span th:text="${app.companyName}"></span>
                                 </span>
                                 <span th:text="${#temporals.format(app.createdAt,'dd MMM')}"></span>
-                            </div> -->
+                            </div>
                         </div>
                     </a>
 
@@ -115,21 +87,18 @@
                         <i class="bi bi-inbox fs-1 d-block mb-3 opacity-50"></i>
                         No pending applications
                     </div>
-
                 </div>
             </div>
         </div>
 
         <!-- RIGHT PANEL -->
-        <div class="col-lg-7 col-md-7">
+        <div class="col-lg-8 col-md-7">
             <div class="glass p-4 h-100">
 
                 <div th:if="${selectedApplication != null}">
-
-                    <h5 class="mb-4">Application Details</h5>
-
+                    <h5 class="mb-3">Application Details</h5>
                     <h4 th:text="${selectedApplication.title}"></h4>
-                    <div class="small-muted mb-4">
+                    <div class="small-muted mb-2">
                         <i class="bi bi-person me-1"></i>
                         <span th:text="${selectedApplication.studentName}"></span>
                         &nbsp;•&nbsp;
@@ -137,16 +106,13 @@
                         <span th:text="${selectedApplication.companyName}"></span>
                     </div>
 
-                    <div class="row g-3 mb-4">
+                    <div class="row g-3 mb-3">
                         <div class="col-md-6">
                             <div class="info-box">
                                 <div class="small-muted">Status</div>
-                                <span class="badge bg-warning text-dark fs-6"
-                                      th:text="${selectedApplication.status}">
-                                </span>
+                                <span class="badge bg-warning fs-6 mt-1" th:text="${selectedApplication.status}"></span>
                             </div>
                         </div>
-
                         <div class="col-md-6">
                             <div class="info-box">
                                 <div class="small-muted">Submitted</div>
@@ -157,45 +123,44 @@
                         </div>
                     </div>
 
-                    <div class="mb-4">
-                        <div class="small-muted fw-semibold mb-2">Description</div>
+                    <div class="mb-3">
+                        <div class="small-muted fw-semibold mb-1">Description</div>
                         <div class="info-box" style="white-space: pre-wrap;"
                              th:text="${selectedApplication.description}">
                         </div>
                     </div>
-                    
 
-                    <!-- ACTIONS -->
-                    <div class="action-bar d-flex gap-3">
-                        <form th:action="@{/supervisor/applications/{id}/accept(id=${selectedApplication.id})}"
-                              method="post">
-                            <button class="btn btn-success btn-lg px-5">
-                                <i class="bi bi-check-circle-fill me-2"></i>Approve
-                            </button>
+                    <!-- Documents -->
+                    <div th:if="${documents != null && !#lists.isEmpty(documents)}" class="mb-3">
+                        <h6>Documents</h6>
+                        <ul class="list-group">
+                            <li class="list-group-item bg-transparent text-white d-flex justify-content-between align-items-center"
+                                th:each="doc : ${documents}">
+                                <span th:text="${doc.fileName}"></span>
+                                <a th:href="@{${doc.filePath}}" class="btn btn-sm btn-outline-info">Download</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div th:if="${documents == null || #lists.isEmpty(documents)}" class="small-muted">
+                        No documents uploaded.
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="action-bar d-flex gap-2">
+                        <form th:action="@{/supervisor/applications/{id}/accept(id=${selectedApplication.id})}" method="post">
+                            <button class="btn btn-success btn-sm"><i class="bi bi-check-circle-fill me-1"></i>Approve</button>
                         </form>
-
-                        <form th:action="@{/supervisor/applications/{id}/reject(id=${selectedApplication.id})}"
-                              method="post">
-                            <button class="btn btn-outline-danger btn-lg px-5">
-                                <i class="bi bi-x-circle me-2"></i>Reject
-                            </button>
+                        <form th:action="@{/supervisor/applications/{id}/reject(id=${selectedApplication.id})}" method="post">
+                            <button class="btn btn-outline-danger btn-sm"><i class="bi bi-x-circle me-1"></i>Reject</button>
                         </form>
                     </div>
+
                 </div>
-                <!-- <div class="mb-4" th:if="${documents != null}">
-                        <div class="small-muted">Application-file</div>
-                        <span class="fw-semibold"
-                            th:text="${documents.fileName}">hell0
-                        </span>
-                    </div> -->
-                <!-- EMPTY STATE -->
-                <div th:unless="${selectedApplication != null}"
-                     class="text-center py-5 mt-5">
-                    <i class="bi bi-arrow-left-circle fs-1 opacity-50 mb-4 d-block"></i>
+
+                <div th:unless="${selectedApplication != null}" class="text-center py-5 mt-5">
+                    <i class="bi bi-arrow-left-circle fs-1 opacity-50 mb-3 d-block"></i>
                     <h5 class="text-muted">Select an application</h5>
-                    <p class="small-muted">
-                        Choose an application from the left panel to review
-                    </p>
+                    <p class="small-muted">Choose an application from the left panel to review</p>
                 </div>
 
             </div>
