@@ -1,12 +1,17 @@
 package project.demo.controller;
 
+import org.attoparser.dom.Document;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import jakarta.servlet.http.HttpServletResponse;
+import project.demo.Model.ApplicationDTO;
 import project.demo.entity.Application;
 import project.demo.entity.Application.ApplicationStatus;
 import project.demo.entity.Company;
@@ -14,14 +19,25 @@ import project.demo.entity.Supervisor;
 import project.demo.entity.User;
 
 import project.demo.repository.CompanyRepository;
+import project.demo.repository.DocumentRepository;
 import project.demo.repository.SupervisorRepository;
 import project.demo.repository.UserRepository;
 import project.demo.service.ApplicationService;
+import project.demo.service.DocumentService;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Paths;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
+
+
+
 
 
 
@@ -44,6 +60,13 @@ public class SupervisorController {
 
     @Autowired
     private project.demo.service.CompanyService companyService;
+
+    @Autowired
+    private DocumentRepository doc_Repository;
+
+    @Autowired
+    private DocumentService documentService;
+
 
     @Autowired
     private project.demo.repository.ApplicationRepository applicationRepository;
@@ -72,9 +95,7 @@ public class SupervisorController {
         // Get applications supervised by this supervisor
         List<Application> apps =
                 applicationService.getApplicationsBySupervisor(supervisor.getId());
-        List<Application> pendingApps = applicationRepository
-            .findBySupervisorIdAndStatus(supervisor.getId(),ApplicationStatus.PENDING);
-        model.addAttribute("recentApplications", pendingApps);
+
         // Sort by created date (latest first)
         apps = apps.stream()
                 .sorted(Comparator.comparing(
@@ -103,7 +124,7 @@ public class SupervisorController {
                 ));
 
         model.addAttribute("companyMap", companyMap);
-        model.addAttribute("recentApplications", apps.stream().limit(5).toList());
+        model.addAttribute("recentApplications", apps.stream().limit(10).toList());
 
         return "Supervisor/dashboard";
     }
@@ -112,23 +133,102 @@ public class SupervisorController {
     // Accept Application
     // =========================
     @PostMapping("/applications/{id}/accept")
-    public String acceptApplication(@PathVariable Integer id) {
-        applicationService.approveApplication(id);
-        return "redirect:/supervisor/dashboard";
-    }
+        public String acceptApplication(@PathVariable Integer id) {
+                applicationService.approveApplication(id);
+                return "redirect:/supervisor/dashboard";
+        }
 
-    // =========================
-    // Reject Application
-    // =========================
-    @PostMapping("/applications/{id}/reject")
-    public String rejectApplication(@PathVariable Integer id) {
-        applicationService.rejectApplication(id);
-        return "redirect:/supervisor/dashbord";
-    }
+        // =========================
+        // Reject Application
+        // =========================
+        @PostMapping("/applications/{id}/reject")
+        public String rejectApplication(@PathVariable Integer id) {
+                applicationService.rejectApplication(id);
+                return "redirect:/supervisor/dashboard";
+        }
 
-    // =========================
-    // Supervisor Assign Applications
-    // ========================
+        // =========================
+        // Supervisor Assign Applications
+        // ========================
+
+      @GetMapping("/approvals")
+        public String approvals(Model model,
+                                @RequestParam(required = false) Integer id) {
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null) return "redirect:/login";
+
+        User user = userRepo.findByEmailWithRoles(auth.getName()).orElseThrow();
+        Supervisor supervisor =
+                supervisorRepository.findByUserId(user.getId()).orElseThrow();
+
+        List<ApplicationDTO> pendingApps =
+                applicationRepository.findPendingWithDetails(
+                        supervisor.getId(),
+                        Application.ApplicationStatus.PENDING
+                );
+
+        model.addAttribute("pendingApplications", pendingApps);
+
+        ApplicationDTO selectedApp = null;
+
+        if (!pendingApps.isEmpty()) {
+                if (id != null) {
+                selectedApp = pendingApps.stream()
+                        .filter(a -> a.getId().equals(id))
+                        .findFirst()
+                        .orElse(pendingApps.get(0));
+                } else {
+                selectedApp = pendingApps.get(0);
+                }
+        }
+
+        model.addAttribute("selectedApplication", selectedApp);
+
+        if (selectedApp != null) {
+                model.addAttribute(
+                        "documents",
+                        doc_Repository.findByApplicationId(selectedApp.getId())
+                );
+        } else {
+                model.addAttribute("documents", List.of());
+        }
+
+        return "Supervisor/approvals";
+        }
+        @GetMapping("/app_view")
+        public String getDetailApp(@RequestParam Integer id, Model model) {
+
+        
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null) return "redirect:/login";
+
+        User user = userRepo.findByEmailWithRoles(auth.getName()).orElseThrow();
+        Supervisor supervisor = supervisorRepository.findByUserId(user.getId()).orElseThrow();
+
+        
+        ApplicationDTO application = applicationRepository
+                .findByIdAndSupervisorId(id, supervisor.getId())
+                .orElseThrow(() -> new RuntimeException("Application not found"));
+
+       
+        List<project.demo.entity.Document> documents = doc_Repository.findByApplicationId(application.getId());
+
+        
+        model.addAttribute("applicationView", application);
+        model.addAttribute("documents", documents);
+
+
+        // 5. Return the detail page
+        return "Supervisor/application_detail";
+        }
+
+
+        
+
+
+        
+    
         // Show pending applications page
         @GetMapping("/assign-app")
         public String showAssignApplications(Model model) {
@@ -141,11 +241,16 @@ public class SupervisorController {
 
         // Handle form submission
         @PostMapping("/assign-app")
-        public String assignAndApprove(@RequestParam Integer applicationId,
+        public String assign(@RequestParam Integer applicationId,
                                 @RequestParam Integer companyId) {
-        applicationService.assignCompanyAndApprove(applicationId, companyId);
+        applicationService.assignCompany(applicationId, companyId);
         return "redirect:/supervisor/assign-app"; // reload the page
         }
+
+
+
+        
+
 
 
     

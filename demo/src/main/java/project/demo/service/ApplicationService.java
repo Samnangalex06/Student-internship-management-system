@@ -88,10 +88,9 @@ public class ApplicationService {
     @Autowired
     private project.demo.repository.CompanyRepository companyRepository;
 
-    public Application assignCompanyAndApprove(Integer applicationId, Integer companyId) {
+    public Application assignCompany(Integer applicationId, Integer companyId) {
         return applicationRepository.findById(applicationId).map(app -> {
             companyRepository.findById(companyId).ifPresent(company -> app.setCompanyId(company.getId()));
-            app.setStatus(Application.ApplicationStatus.APPROVED);
             return applicationRepository.save(app);
         }).orElse(null);
     }

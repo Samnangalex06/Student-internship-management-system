@@ -1,6 +1,7 @@
 package project.demo.entity;
 
 import jakarta.persistence.*;
+import jakarta.persistence.criteria.CriteriaBuilder.In;
 
 @Entity
 @Table(name = "document")
@@ -24,6 +25,7 @@ public class Document {
     @ManyToOne
     @JoinColumn(name = "internship_app_id")
     private Application internshipAppId;
+
 
     // getters & setters
     public Integer getId() {
@@ -59,4 +61,6 @@ public class Document {
     public void setInternshipAppId(Application internshipAppId) {
         this.internshipAppId = internshipAppId;
     }
+    
+
 }
