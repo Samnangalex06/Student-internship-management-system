@@ -1,27 +1,25 @@
 package project.demo.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 
-
-import project.demo.service.DocumentService;
-import project.demo.repository.SupervisorRepository;
-import project.demo.entity.Student;
 import project.demo.entity.Application;
-import project.demo.repository.StudentRepository;
-import project.demo.repository.UserRepository;
+import project.demo.entity.Student;
 import project.demo.repository.CompanyRepository;
+import project.demo.repository.StudentRepository;
+import project.demo.repository.SupervisorRepository;
+import project.demo.repository.UserRepository;
 import project.demo.service.ApplicationService;
+import project.demo.service.DocumentService;
 
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
-
 
 @Controller
 @RequestMapping("/student")
@@ -45,36 +43,49 @@ public class StudentController {
     @Autowired
     private SupervisorRepository supervisorRepository;
 
-    // Helper to get current logged-in student
+    // =====================================================
+    // Helper: get current logged-in student
+    // =====================================================
     private Student getCurrentStudent() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String email = auth != null ? auth.getName() : null;
 
-        if (email == null) return null;
+        if (email == null) {
+            return null;
+        }
 
         return userRepository.findByEmailWithRoles(email)
-                .flatMap(user -> studentRepository.findByUserId(user))
+                .flatMap(user -> studentRepository.findByUser(user)) // ✅ FIXED
                 .orElse(null);
     }
 
-    // ==================== DASHBOARD ====================
+    // =====================================================
+    // DASHBOARD
+    // =====================================================
     @GetMapping("/dashboard")
     public String dashboard(Model model) {
+
         Student student = getCurrentStudent();
 
         if (student != null) {
             model.addAttribute("student", student);
 
-            List<Application> apps = applicationService.getApplicationsByStudent(student.getId());
-            apps.sort(Comparator.comparing(Application::getCreatedAt,
-                    Comparator.nullsLast(Comparator.reverseOrder())));
+            List<Application> apps =
+                    applicationService.getApplicationsByStudent(student.getId());
+
+            apps.sort(Comparator.comparing(
+                    Application::getCreatedAt,
+                    Comparator.nullsLast(Comparator.reverseOrder())
+            ));
 
             model.addAttribute("applicationCount", apps.size());
 
-            String latestStatus = apps.isEmpty() ? "No application"
+            String latestStatus = apps.isEmpty()
+                    ? "No application"
                     : Optional.ofNullable(apps.get(0).getStatus())
                               .map(Enum::name)
                               .orElse("PENDING");
+
             model.addAttribute("latestStatus", latestStatus);
 
             Map<Integer, String> companyMap = new HashMap<>();
@@ -84,8 +95,8 @@ public class StudentController {
                     .collect(Collectors.toSet());
 
             if (!companyIds.isEmpty()) {
-                companyRepository.findAllById(companyIds).forEach(c ->
-                        companyMap.put(c.getId(), c.getName()));
+                companyRepository.findAllById(companyIds)
+                        .forEach(c -> companyMap.put(c.getId(), c.getName()));
             }
 
             model.addAttribute("companyMap", companyMap);
@@ -102,21 +113,50 @@ public class StudentController {
         return "student/dashboard";
     }
 
-    // ==================== PROFILE ====================
+    // =====================================================
+    // PROFILE
+    // =====================================================
     @GetMapping("/profile")
     public String profile(Model model) {
         Student student = getCurrentStudent();
         model.addAttribute("student", student != null ? student : new Student());
         return "student/profile-form";
     }
+    @PostMapping("/profile/save")
+public String saveProfile(
+        @ModelAttribute Student formStudent,
+        Model model
+) {
+    Student student = getCurrentStudent();
+    if (student == null) {
+        return "redirect:/login";
+    }
 
-    // ==================== APPLICATION LIST ====================
+    // Update allowed fields only
+    student.setFullName(formStudent.getFullName());
+    student.setEmail(formStudent.getEmail());
+    student.setPhoneNumber(formStudent.getPhoneNumber());
+
+    studentRepository.save(student);
+
+    model.addAttribute("student", student);
+    model.addAttribute("success", true);
+
+    return "student/profile-form";
+}
+
+
+    // =====================================================
+    // APPLICATION LIST
+    // =====================================================
     @GetMapping("/applications")
     public String applications(Model model) {
+
         Student student = getCurrentStudent();
 
         if (student != null) {
-            List<Application> apps = applicationService.getApplicationsByStudent(student.getId());
+            List<Application> apps =
+                    applicationService.getApplicationsByStudent(student.getId());
 
             Map<Integer, String> companyMap = new HashMap<>();
             Set<Integer> companyIds = apps.stream()
@@ -125,12 +165,13 @@ public class StudentController {
                     .collect(Collectors.toSet());
 
             if (!companyIds.isEmpty()) {
-                companyRepository.findAllById(companyIds).forEach(c ->
-                        companyMap.put(c.getId(), c.getName()));
+                companyRepository.findAllById(companyIds)
+                        .forEach(c -> companyMap.put(c.getId(), c.getName()));
             }
 
             model.addAttribute("applications", apps);
             model.addAttribute("companyMap", companyMap);
+
         } else {
             model.addAttribute("applications", Collections.emptyList());
             model.addAttribute("companyMap", Collections.emptyMap());
@@ -138,25 +179,33 @@ public class StudentController {
 
         return "student/application-list";
     }
+
+    // =====================================================
+    // NEW APPLICATION FORM
+    // =====================================================
     @GetMapping("/applications/new")
     public String newApplicationForm(Model model) {
-    Student student = getCurrentStudent();
-    if (student == null) {
-        return "redirect:/login";
+
+        Student student = getCurrentStudent();
+        if (student == null) {
+            return "redirect:/login";
+        }
+
+        model.addAttribute("application", new Application());
+        model.addAttribute("companies", companyRepository.findAll());
+        model.addAttribute("supervisors", supervisorRepository.findAll());
+
+        return "student/application-form";
     }
 
-    model.addAttribute("application", new Application());
-    model.addAttribute("companies", companyRepository.findAll());
-    model.addAttribute("supervisors", supervisorRepository.findAll());
-
-    return "student/application-form";
-    }
-
-
+    // =====================================================
+    // SAVE APPLICATION
+    // =====================================================
     @PostMapping("/applications/save")
     public String saveApplication(
             @ModelAttribute Application application,
-            @RequestParam(value = "documents", required = false) MultipartFile[] documents
+            @RequestParam(value = "documents", required = false)
+            MultipartFile[] documents
     ) throws IOException {
 
         Student student = getCurrentStudent();
@@ -173,16 +222,20 @@ public class StudentController {
         Application savedApplication =
                 applicationService.createApplication(application);
 
-         if (documents != null && documents.length > 0) {
-        documentService.saveDocuments(
-                documents,
-                student,
-                savedApplication
-        );
-    }
+        if (documents != null && documents.length > 0) {
+            documentService.saveDocuments(
+                    documents,
+                    student,
+                    savedApplication
+            );
+        }
 
         return "redirect:/student/applications";
     }
+
+    // =====================================================
+    // VIEW / EDIT APPLICATION
+    // =====================================================
     @GetMapping("/applications/{id:\\d+}")
     public String viewApplication(@PathVariable Integer id, Model model) {
 
@@ -200,7 +253,6 @@ public class StudentController {
         model.addAttribute("application", app);
         model.addAttribute("companies", companyRepository.findAll());
         model.addAttribute("supervisors", supervisorRepository.findAll());
-
         model.addAttribute(
                 "documents",
                 documentService.getDocumentsByApplication(app)
@@ -209,10 +261,9 @@ public class StudentController {
         return "student/application-form";
     }
 
-
-
-
-    // ==================== EVALUATIONS (placeholder) ====================
+    // =====================================================
+    // EVALUATIONS (PLACEHOLDER)
+    // =====================================================
     @GetMapping("/evaluations")
     public String evaluations(Model model) {
         model.addAttribute("evaluations", Collections.emptyList());

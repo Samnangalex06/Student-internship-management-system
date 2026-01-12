@@ -9,6 +9,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import project.demo.entity.Student;
 
 public interface StudentRepository extends JpaRepository<Student, Integer>{
-    Optional<Student> findByUserId(User userId);
+   Optional<Student> findByUser(User user);
     boolean existsByEmail(String email);
 }

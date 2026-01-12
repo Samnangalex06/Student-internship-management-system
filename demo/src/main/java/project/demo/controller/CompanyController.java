@@ -1,44 +1,44 @@
-package project.demo.controller;
+// package project.demo.controller;
 
-import java.util.List;
+// import java.util.List;
 
-import org.springframework.web.bind.annotation.*;
+// import org.springframework.web.bind.annotation.*;
 
-import project.demo.entity.Company;
-import project.demo.repository.CompanyRepository;
+// import project.demo.entity.Company;
+// import project.demo.repository.CompanyRepository;
 
-@RestController
-@RequestMapping("/api/companies")
-public class CompanyController {
+// @RestController
+// @RequestMapping("/api/companies")
+// public class CompanyController {
 
-    private final CompanyRepository companyRepository;
+//     private final CompanyRepository companyRepository;
 
-    public CompanyController(CompanyRepository companyRepository) {
-        this.companyRepository = companyRepository;
-    }
+//     public CompanyController(CompanyRepository companyRepository) {
+//         this.companyRepository = companyRepository;
+//     }
 
-    @PostMapping
-    public Company createCompany(@RequestBody Company company) {
-        return companyRepository.save(company);
-    }
+//     @PostMapping
+//     public Company createCompany(@RequestBody Company company) {
+//         return companyRepository.save(company);
+//     }
 
-    @GetMapping
-    public List<Company> getAllCompanies() {
-        return companyRepository.findAll();
-    }
+//     @GetMapping
+//     public List<Company> getAllCompanies() {
+//         return companyRepository.findAll();
+//     }
 
-    @PutMapping("/{id}")
-    public Company updateCompany(@PathVariable int id,
-                                 @RequestBody Company company) {
-        company.setId(id);
-        return companyRepository.save(company);
-    }
+//     @PutMapping("/{id}")
+//     public Company updateCompany(@PathVariable int id,
+//                                  @RequestBody Company company) {
+//         company.setId(id);
+//         return companyRepository.save(company);
+//     }
 
-    // DELETE company
-    @DeleteMapping("/{id}")
-    public void deleteCompany(@PathVariable Integer id) {
-        companyRepository.deleteById(id);
-    }
+//     // DELETE company
+//     @DeleteMapping("/{id}")
+//     public void deleteCompany(@PathVariable Integer id) {
+//         companyRepository.deleteById(id);
+//     }
 
  
 
@@ -47,7 +47,7 @@ public class CompanyController {
 
 
 
-}
+// }
 
 
-// original
+// // original
