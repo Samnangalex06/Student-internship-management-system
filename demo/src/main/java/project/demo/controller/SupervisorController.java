@@ -144,7 +144,7 @@ public class SupervisorController {
         @PostMapping("/applications/{id}/reject")
         public String rejectApplication(@PathVariable Integer id) {
                 applicationService.rejectApplication(id);
-                return "redirect:/supervisor/dashbord";
+                return "redirect:/supervisor/dashboard";
         }
 
         // =========================
@@ -196,7 +196,7 @@ public class SupervisorController {
 
         return "Supervisor/approvals";
         }
-        @GetMapping("/supervisor/app_view")
+        @GetMapping("/app_view")
         public String getDetailApp(@RequestParam Integer id, Model model) {
 
         
@@ -215,12 +215,12 @@ public class SupervisorController {
         List<project.demo.entity.Document> documents = doc_Repository.findByApplicationId(application.getId());
 
         
-        model.addAttribute("application", application);
+        model.addAttribute("applicationView", application);
         model.addAttribute("documents", documents);
 
 
         // 5. Return the detail page
-        return "Supervisor/app_view";
+        return "Supervisor/application_detail";
         }
 
 

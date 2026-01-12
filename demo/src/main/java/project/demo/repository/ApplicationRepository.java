@@ -61,9 +61,8 @@ public interface ApplicationRepository extends JpaRepository<Application, Intege
         FROM Application a
         JOIN Student s ON s.id = a.studentId
         JOIN Company c ON c.id = a.companyId
-        WHERE a.supervisorId = :supervisorId
-        AND a.status = :status
-        ORDER BY a.createdAt DESC
+        WHERE a.id = :id
+        AND a.supervisorId = :supervisorId
         """)
     Optional<ApplicationDTO> findByIdAndSupervisorId(@Param("id") Integer id ,@Param("supervisorId") Integer supervisorId);
 
