@@ -41,6 +41,7 @@ import java.util.stream.Collectors;
 
 
 
+
 @Controller
 @RequestMapping("/supervisor")
 public class SupervisorController {
@@ -195,6 +196,35 @@ public class SupervisorController {
 
         return "Supervisor/approvals";
         }
+        @GetMapping("/supervisor/app_view")
+        public String getDetailApp(@RequestParam Integer id, Model model) {
+
+        
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null) return "redirect:/login";
+
+        User user = userRepo.findByEmailWithRoles(auth.getName()).orElseThrow();
+        Supervisor supervisor = supervisorRepository.findByUserId(user.getId()).orElseThrow();
+
+        
+        ApplicationDTO application = applicationRepository
+                .findByIdAndSupervisorId(id, supervisor.getId())
+                .orElseThrow(() -> new RuntimeException("Application not found"));
+
+       
+        List<project.demo.entity.Document> documents = doc_Repository.findByApplicationId(application.getId());
+
+        
+        model.addAttribute("application", application);
+        model.addAttribute("documents", documents);
+
+
+        // 5. Return the detail page
+        return "Supervisor/app_view";
+        }
+
+
+        
 
 
         

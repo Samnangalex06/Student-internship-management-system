@@ -9,25 +9,35 @@ public class UserRole {
     @EmbeddedId
     private UserRoleId id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("userId")
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     @JsonIgnore
     private User user;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("roleId")
-    @JoinColumn(name = "role_id")
+    @JoinColumn(name = "role_id", nullable = false)
     private Role role;
 
-    public UserRole() {}
+    public UserRole() {
+        this.id = new UserRoleId();
+    }
+
+    public UserRole(User user, Role role) {
+        this.user = user;
+        this.role = role;
+        this.id = new UserRoleId();
+    }
 
     public UserRoleId getId() {
         return id;
     }
+    
     public void setId(UserRoleId id){
         this.id = id;
     }
+    
     public User getUser() {
         return user;
     }

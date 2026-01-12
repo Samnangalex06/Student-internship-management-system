@@ -63,20 +63,20 @@
 
                 <!-- View button -->
                 <a class="btn btn-outline-info btn-sm"
-                   th:href="@{/supervisor/approvals(id=${app.id})}">
+                   th:href="@{/supervisor/approvols(id=${app.id})}">
                     View
                 </a>
 
                 
 
                 <!-- Reject button -->
-                <form th:action="@{/supervisor/applications/{id}/reject(id=${app.id})}" method="post">
+                <!-- <form th:action="@{/supervisor/applications/{id}/reject(id=${app.id})}" method="post">
                     <button class="btn btn-danger btn-sm"
                             type="submit"
                             th:disabled="${app.status != T(project.demo.entity.Application.ApplicationStatus).PENDING}">
                         Reject
                     </button>
-                </form>
+                </form> -->
 
             </td>
         </tr>

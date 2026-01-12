@@ -17,8 +17,7 @@ import project.demo.repository.StudentRepository;
 import project.demo.repository.UserRepository;
 import project.demo.repository.CompanyRepository;
 import project.demo.service.ApplicationService;
-import project.demo.entity.Document;
-import java.io.File;
+
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;

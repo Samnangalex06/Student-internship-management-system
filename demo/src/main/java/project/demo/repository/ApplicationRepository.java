@@ -2,6 +2,8 @@ package project.demo.repository;
 
 import project.demo.Model.ApplicationDTO;
 import project.demo.entity.Application;
+import project.demo.entity.User;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -45,4 +47,25 @@ public interface ApplicationRepository extends JpaRepository<Application, Intege
             @Param("status") Application.ApplicationStatus status
         );
 
+    @Query("""
+        SELECT new project.demo.Model.ApplicationDTO(
+            a.id,
+            s.id, s.full_name,
+            c.id, c.name,
+            a.supervisorId,
+            a.title,
+            a.description,
+            a.status,
+            a.createdAt
+        )
+        FROM Application a
+        JOIN Student s ON s.id = a.studentId
+        JOIN Company c ON c.id = a.companyId
+        WHERE a.supervisorId = :supervisorId
+        AND a.status = :status
+        ORDER BY a.createdAt DESC
+        """)
+    Optional<ApplicationDTO> findByIdAndSupervisorId(@Param("id") Integer id ,@Param("supervisorId") Integer supervisorId);
+
+    
 }
