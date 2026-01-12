@@ -2,12 +2,15 @@ package project.demo.controller;
 
 import org.attoparser.dom.Document;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import jakarta.servlet.http.HttpServletResponse;
 import project.demo.Model.ApplicationDTO;
 import project.demo.entity.Application;
 import project.demo.entity.Application.ApplicationStatus;
@@ -20,12 +23,19 @@ import project.demo.repository.DocumentRepository;
 import project.demo.repository.SupervisorRepository;
 import project.demo.repository.UserRepository;
 import project.demo.service.ApplicationService;
+import project.demo.service.DocumentService;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Paths;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
 
 
 
@@ -52,6 +62,9 @@ public class SupervisorController {
 
     @Autowired
     private DocumentRepository doc_Repository;
+
+    @Autowired
+    private DocumentService documentService;
 
 
     @Autowired
@@ -119,59 +132,72 @@ public class SupervisorController {
     // Accept Application
     // =========================
     @PostMapping("/applications/{id}/accept")
-    public String acceptApplication(@PathVariable Integer id) {
-        applicationService.approveApplication(id);
-        return "redirect:/supervisor/dashboard";
-    }
+        public String acceptApplication(@PathVariable Integer id) {
+                applicationService.approveApplication(id);
+                return "redirect:/supervisor/dashboard";
+        }
 
-    // =========================
-    // Reject Application
-    // =========================
-    @PostMapping("/applications/{id}/reject")
-    public String rejectApplication(@PathVariable Integer id) {
-        applicationService.rejectApplication(id);
-        return "redirect:/supervisor/dashbord";
-    }
+        // =========================
+        // Reject Application
+        // =========================
+        @PostMapping("/applications/{id}/reject")
+        public String rejectApplication(@PathVariable Integer id) {
+                applicationService.rejectApplication(id);
+                return "redirect:/supervisor/dashbord";
+        }
 
-    // =========================
-    // Supervisor Assign Applications
-    // ========================
+        // =========================
+        // Supervisor Assign Applications
+        // ========================
 
-       @GetMapping("/approvals")
-public String approvals(Model model, @RequestParam(required = false) Integer id) {
+      @GetMapping("/approvals")
+        public String approvals(Model model,
+                                @RequestParam(required = false) Integer id) {
 
-    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-    String email = auth != null ? auth.getName() : null;
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null) return "redirect:/login";
 
-    if (email == null) return "redirect:/login";
+        User user = userRepo.findByEmailWithRoles(auth.getName()).orElseThrow();
+        Supervisor supervisor =
+                supervisorRepository.findByUserId(user.getId()).orElseThrow();
 
-    User user = userRepo.findByEmailWithRoles(email).orElseThrow();
-    Supervisor supervisor = supervisorRepository.findByUserId(user.getId()).orElseThrow();
+        List<ApplicationDTO> pendingApps =
+                applicationRepository.findPendingWithDetails(
+                        supervisor.getId(),
+                        Application.ApplicationStatus.PENDING
+                );
 
-    // get pending DTOs
-    List<ApplicationDTO> pendingApps = applicationRepository.findPendingWithDetails(
-        supervisor.getId(), Application.ApplicationStatus.PENDING);
+        model.addAttribute("pendingApplications", pendingApps);
 
-    model.addAttribute("pendingApplications", pendingApps);
+        ApplicationDTO selectedApp = null;
 
-    // select first application if id not provided
-    ApplicationDTO selectedApp = null;
-    if (id != null) {
-        selectedApp = pendingApps.stream()
-                .filter(a -> a.getId().equals(id))
-                .findFirst()
-                .orElse(null);
-    } else if (!pendingApps.isEmpty()) {
-        selectedApp = pendingApps.get(0);
-    }
-    
-        List<project.demo.entity.Document> docs = doc_Repository.findByApplicationId(selectedApp.getId());
-        model.addAttribute("documents", docs);
-    model.addAttribute("selectedApplication", selectedApp);
+        if (!pendingApps.isEmpty()) {
+                if (id != null) {
+                selectedApp = pendingApps.stream()
+                        .filter(a -> a.getId().equals(id))
+                        .findFirst()
+                        .orElse(pendingApps.get(0));
+                } else {
+                selectedApp = pendingApps.get(0);
+                }
+        }
 
-    return "Supervisor/approvals";
-}
+        model.addAttribute("selectedApplication", selectedApp);
 
+        if (selectedApp != null) {
+                model.addAttribute(
+                        "documents",
+                        doc_Repository.findByApplicationId(selectedApp.getId())
+                );
+        } else {
+                model.addAttribute("documents", List.of());
+        }
+
+        return "Supervisor/approvals";
+        }
+
+
+        
     
         // Show pending applications page
         @GetMapping("/assign-app")
@@ -190,6 +216,9 @@ public String approvals(Model model, @RequestParam(required = false) Integer id)
         applicationService.assignCompany(applicationId, companyId);
         return "redirect:/supervisor/assign-app"; // reload the page
         }
+
+
+
         
 
 

@@ -137,7 +137,7 @@
                             <li class="list-group-item bg-transparent text-white d-flex justify-content-between align-items-center"
                                 th:each="doc : ${documents}">
                                 <span th:text="${doc.fileName}"></span>
-                                <a th:href="@{${doc.filePath}}" class="btn btn-sm btn-outline-info">Download</a>
+                                <a th:href="@{|/${doc.filePath}|}" th:attr="download=${doc.fileName}" class="btn btn-sm btn-outline-info">Download</a>
                             </li>
                         </ul>
                     </div>
