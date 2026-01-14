@@ -38,10 +38,6 @@ import java.util.stream.Collectors;
 
 
 
-
-
-
-
 @Controller
 @RequestMapping("/supervisor")
 public class SupervisorController {
@@ -224,10 +220,7 @@ public class SupervisorController {
         }
 
 
-        
 
-
-        
     
         // Show pending applications page
         @GetMapping("/assign-app")
