@@ -27,7 +27,7 @@ public interface ApplicationRepository extends JpaRepository<Application, Intege
     @Query("""
         SELECT new project.demo.Model.ApplicationDTO(
             a.id,
-            s.id, s.full_name,
+            s.id, s.fullName,
             c.id, c.name,
             a.supervisorId,
             a.title,
@@ -50,7 +50,7 @@ public interface ApplicationRepository extends JpaRepository<Application, Intege
     @Query("""
         SELECT new project.demo.Model.ApplicationDTO(
             a.id,
-            s.id, s.full_name,
+            s.id, s.fullName,
             c.id, c.name,
             a.supervisorId,
             a.title,
