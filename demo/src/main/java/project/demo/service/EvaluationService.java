@@ -30,6 +30,6 @@ public class EvaluationService {
     }
 
     public List<Evaluation> getByApplication(Integer applicationId) {
-        return evaluationRepository.findByApplication_Id(applicationId);
+        return evaluationRepository.findByApplicationId(applicationId);
     }
 }

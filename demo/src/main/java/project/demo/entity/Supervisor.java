@@ -15,8 +15,7 @@ public class Supervisor {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    
-    @JoinColumn(name ="user_id")
+    @JoinColumn(name = "user_id")
     private Integer userId;
 
     private String fullName;
@@ -24,27 +23,61 @@ public class Supervisor {
     private Integer phoneNumber;
     private String department;
 
-    
-    // @OneToMany(mappedBy = "supervisor")
-    // @JsonIgnore
-    // private List<Student> students;
-
     // --- Getters & Setters ---
-    public Integer getId() { return id; }
-    public void setId(Integer id) { this.id = id; }
 
-    public Integer getUserId() { return userId; }
-    public void setUserId(Integer userId) { this.userId = userId; }
+    public Integer getId() {
+        return id;
+    }
 
-    public String getFullName() { return fullName; }
-    public void setFullName(String fullName) { this.fullName = fullName; }
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
+    public Integer getUserId() {
+        return userId;
+    }
 
-    public Integer getPhoneNumber() { return phoneNumber; }
-    public void setPhoneNumber(Integer phoneNumber) { this.phoneNumber = phoneNumber; }
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
 
-    public String getDepartment() { return department; }
-    public void setDepartment(String department) { this.department = department; }
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public Integer getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(Integer phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public String getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(String department) {
+        this.department = department;
+    }
+
+    /**
+     * Convenience getter for Thymeleaf.
+     * Allows usage of: eval.supervisor.name
+     */
+    public String getName() {
+        return fullName;
+    }
 }
