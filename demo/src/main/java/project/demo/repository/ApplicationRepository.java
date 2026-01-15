@@ -2,7 +2,7 @@ package project.demo.repository;
 
 import project.demo.Model.ApplicationDTO;
 import project.demo.entity.Application;
-import project.demo.entity.User;
+
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -20,7 +20,7 @@ public interface ApplicationRepository extends JpaRepository<Application, Intege
     List<Application> findByCompanyId(Integer companyId);
     
     Optional<Application> findByStudentIdAndCompanyId(Integer studentId, Integer companyId);
-
+    Optional<Application> findByIdAndSupervisorId(Integer id ,Integer supervisorId);
     List<Application> findBySupervisorId(Integer supervisorId);
     List<Application> findByStatus(Application.ApplicationStatus status);
     List<Application> findBySupervisorIdAndStatus(Integer supervisorId, Application.ApplicationStatus status);
@@ -64,7 +64,7 @@ public interface ApplicationRepository extends JpaRepository<Application, Intege
         WHERE a.id = :id
         AND a.supervisorId = :supervisorId
         """)
-    Optional<ApplicationDTO> findByIdAndSupervisorId(@Param("id") Integer id ,@Param("supervisorId") Integer supervisorId);
+    Optional<ApplicationDTO> findDTOByIdAndSupervisorId(@Param("id") Integer id ,@Param("supervisorId") Integer supervisorId);
 
     
 }

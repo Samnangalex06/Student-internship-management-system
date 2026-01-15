@@ -1,39 +1,35 @@
 package project.demo.controller;
 
-import org.attoparser.dom.Document;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.UrlResource;
-import org.springframework.http.ResponseEntity;
+
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import jakarta.servlet.http.HttpServletResponse;
+
 import project.demo.Model.ApplicationDTO;
 import project.demo.entity.Application;
-import project.demo.entity.Application.ApplicationStatus;
+
 import project.demo.entity.Company;
+import project.demo.entity.Evaluation;
 import project.demo.entity.Supervisor;
 import project.demo.entity.User;
 
 import project.demo.repository.CompanyRepository;
 import project.demo.repository.DocumentRepository;
+import project.demo.repository.EvaluationRepository;
 import project.demo.repository.SupervisorRepository;
 import project.demo.repository.UserRepository;
 import project.demo.service.ApplicationService;
-import project.demo.service.DocumentService;
+import project.demo.service.EvaluationService;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.file.Paths;
+
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -60,8 +56,12 @@ public class SupervisorController {
     @Autowired
     private DocumentRepository doc_Repository;
 
+
     @Autowired
-    private DocumentService documentService;
+    private EvaluationService evaluationService;
+
+    @Autowired
+    private EvaluationRepository evaluationRepository;
 
 
     @Autowired
@@ -204,7 +204,7 @@ public class SupervisorController {
 
         
         ApplicationDTO application = applicationRepository
-                .findByIdAndSupervisorId(id, supervisor.getId())
+                .findDTOByIdAndSupervisorId(id, supervisor.getId())
                 .orElseThrow(() -> new RuntimeException("Application not found"));
 
        
@@ -222,24 +222,103 @@ public class SupervisorController {
 
 
     
-        // Show pending applications page
-        @GetMapping("/assign-app")
+        @GetMapping("/evaluation")
         public String showAssignApplications(Model model) {
-        List<Application> applications = applicationRepository.findByStatus(Application.ApplicationStatus.PENDING);
-        List<Company> companies = companyService.getAll();
-        model.addAttribute("applications", applications);
-        model.addAttribute("companies", companies);
-        return "Supervisor/assign-app"; // Thymeleaf template name
+                Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+                System.out.println("DEBUG: /evaluation GET called by user: " + (auth != null ? auth.getName() : "null"));
+
+                if (auth == null) {
+                        System.out.println("DEBUG: No authenticated user, redirecting to login.");
+                        return "redirect:/login";
+                }
+
+                User user = userRepo.findByEmailWithRoles(auth.getName()).orElseThrow(() -> new RuntimeException("User not found"));
+                System.out.println("DEBUG: Found user: " + user.getEmail());
+
+                Supervisor supervisor = supervisorRepository.findByUserId(user.getId()).orElseThrow(() -> new RuntimeException("Supervisor not found"));
+                System.out.println("DEBUG: Supervisor ID: " + supervisor.getId());
+
+                // Load applications with PENDING status
+                List<Application> applications = applicationRepository.findByStatus(Application.ApplicationStatus.PENDING);
+                System.out.println("DEBUG: Pending applications count: " + applications.size());
+
+                // Load all companies
+                List<Company> companies = companyService.getAll();
+                System.out.println("DEBUG: Total companies count: " + companies.size());
+                
+                Map<Integer, List<Evaluation>> evaluationsMap = applications.stream()
+                .collect(Collectors.toMap(
+                        Application::getId,
+                        app -> evaluationService.getEvaluationsByApplicationId(app.getId()) // sorted by date DESC
+                ));
+                model.addAttribute("applications", applications);
+                model.addAttribute("companies", companies);
+                model.addAttribute("evaluationsMap", evaluationsMap);
+                return "Supervisor/evaluation"; // Thymeleaf template
         }
+
 
         // Handle form submission
-        @PostMapping("/assign-app")
+        @PostMapping("/evaluation")
         public String assign(@RequestParam Integer applicationId,
-                                @RequestParam Integer companyId) {
-        applicationService.assignCompany(applicationId, companyId);
-        return "redirect:/supervisor/assign-app"; // reload the page
+                                @RequestParam String comment,
+                                @RequestParam Integer score,
+                                Authentication authentication  ) {
+
+        
+            System.out.println("DEBUG POST: applicationId=" + applicationId);
+                System.out.println("DEBUG POST: comment=" + comment + ", score=" + score);
+                System.out.println("DEBUG POST: username=" + authentication.getName());
+
+                Supervisor supervisor = supervisorRepository.findByEmail(authentication.getName())
+                        .orElseThrow(() -> new RuntimeException("Supervisor not found"));
+                System.out.println("DEBUG POST: supervisorId=" + supervisor.getId());
+
+        Application application = applicationRepository.findById(applicationId)
+        .orElseThrow(() -> new RuntimeException("Application not found"));         if (application.getSupervisorId() == null) {
+                application.setSupervisorId(supervisor.getId());
+                applicationRepository.save(application);
+                System.out.println("DEBUG POST: application assigned to supervisorId=" + supervisor.getId());
         }
 
+        Evaluation evaluation = evaluationService
+        .getByApplicationAndSupervisor(applicationId, supervisor.getId());
+
+        if (evaluation == null) {
+                evaluation = new Evaluation();
+                evaluation.setApplication(application);
+                evaluation.setSupervisor(supervisor);
+        }
+
+        evaluation.setComment(comment);
+        evaluation.setScore(score);
+
+        evaluationService.addEvaluation(evaluation);
+        return "redirect:/supervisor/evaluation"; // reload the page
+        }
+
+        @PostMapping("/applications/{id}/delete")
+        public String deleteApplication(@PathVariable Integer id) {
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null) return "redirect:/login";
+
+        User user = userRepo.findByEmailWithRoles(auth.getName()).orElseThrow();
+        Supervisor supervisor = supervisorRepository.findByUserId(user.getId()).orElseThrow();
+
+        Application application = applicationRepository
+                .findById(id)
+                .orElseThrow(() -> new RuntimeException("Application not found"));
+
+        // 🔐 Security check: supervisor owns this application
+        if (!application.getSupervisorId().equals(supervisor.getId())) {
+                throw new RuntimeException("Unauthorized delete attempt");
+        }
+
+        applicationRepository.delete(application);
+
+        return "redirect:/supervisor/dashboard";
+        }
 
 
         
