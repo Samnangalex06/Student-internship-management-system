@@ -1,5 +1,6 @@
 package project.demo.controller;
 
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -10,10 +11,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 import project.demo.entity.Application;
 import project.demo.entity.Student;
+import project.demo.entity.Evaluation; // ← ADD THIS IMPORT
 import project.demo.repository.CompanyRepository;
 import project.demo.repository.StudentRepository;
 import project.demo.repository.SupervisorRepository;
 import project.demo.repository.UserRepository;
+import project.demo.repository.EvaluationRepository; // ← ADD THIS IMPORT
 import project.demo.service.ApplicationService;
 import project.demo.service.DocumentService;
 
@@ -43,6 +46,9 @@ public class StudentController {
     @Autowired
     private SupervisorRepository supervisorRepository;
 
+    @Autowired
+    private EvaluationRepository evaluationRepository; // ← NEW: ADD THIS
+
     // =====================================================
     // Helper: get current logged-in student
     // =====================================================
@@ -55,7 +61,7 @@ public class StudentController {
         }
 
         return userRepository.findByEmailWithRoles(email)
-                .flatMap(user -> studentRepository.findByUser(user)) // ✅ FIXED
+                .flatMap(user -> studentRepository.findByUser(user))
                 .orElse(null);
     }
 
@@ -122,29 +128,29 @@ public class StudentController {
         model.addAttribute("student", student != null ? student : new Student());
         return "student/profile-form";
     }
+
     @PostMapping("/profile/save")
-public String saveProfile(
-        @ModelAttribute Student formStudent,
-        Model model
-) {
-    Student student = getCurrentStudent();
-    if (student == null) {
-        return "redirect:/login";
+    public String saveProfile(
+            @ModelAttribute Student formStudent,
+            Model model
+    ) {
+        Student student = getCurrentStudent();
+        if (student == null) {
+            return "redirect:/login";
+        }
+
+        // Update allowed fields only
+        student.setFullName(formStudent.getFullName());
+        student.setEmail(formStudent.getEmail());
+        student.setPhoneNumber(formStudent.getPhoneNumber());
+
+        studentRepository.save(student);
+
+        model.addAttribute("student", student);
+        model.addAttribute("success", true);
+
+        return "student/profile-form";
     }
-
-    // Update allowed fields only
-    student.setFullName(formStudent.getFullName());
-    student.setEmail(formStudent.getEmail());
-    student.setPhoneNumber(formStudent.getPhoneNumber());
-
-    studentRepository.save(student);
-
-    model.addAttribute("student", student);
-    model.addAttribute("success", true);
-
-    return "student/profile-form";
-}
-
 
     // =====================================================
     // APPLICATION LIST
@@ -262,11 +268,27 @@ public String saveProfile(
     }
 
     // =====================================================
-    // EVALUATIONS (PLACEHOLDER)
+    // EVALUATIONS - FIXED VERSION
     // =====================================================
-    @GetMapping("/evaluations")
-    public String evaluations(Model model) {
-        model.addAttribute("evaluations", Collections.emptyList());
-        return "student/evaluation-list";
+  @GetMapping("/evaluations")
+public String evaluations(Model model) {
+    Student student = getCurrentStudent();
+    if (student == null) {
+        return "redirect:/login";
     }
+
+   List<Evaluation> evaluations =
+        evaluationRepository.findByStudentId(student.getId());
+
+
+    // Initialize lazy relations (fix proxy issue)
+    for (Evaluation eval : evaluations) {
+        Hibernate.initialize(eval.getSupervisor());  // ← ADD THIS LINE
+    }
+
+    model.addAttribute("evaluations", evaluations);
+    model.addAttribute("hasEvaluations", !evaluations.isEmpty());
+
+    return "student/evaluation-list";
+}
 }

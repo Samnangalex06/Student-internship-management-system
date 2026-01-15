@@ -21,7 +21,7 @@ public class Application {
     @Column(name = "supervisor_id")
     private Integer supervisorId;
 
-    // ---------- FORM FIELD (WAS MISSING) ----------
+    // ---------- FORM FIELD ----------
     @Column(nullable = false)
     private String title;
 
@@ -32,6 +32,10 @@ public class Application {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private ApplicationStatus status = ApplicationStatus.PENDING;
+
+    // ---------- NEW FIELD: SUPERVISOR COMMENT ----------
+    @Column(columnDefinition = "TEXT")
+    private String supervisorComment;           // ← Add this
 
     // ---------- TIMESTAMPS ----------
     @Column(name = "created_at", updatable = false)
@@ -60,6 +64,7 @@ public class Application {
     public String getTitle() { return title; }
     public String getDescription() { return description; }
     public ApplicationStatus getStatus() { return status; }
+    public String getSupervisorComment() { return supervisorComment; }     // ← Add
     public LocalDateTime getCreatedAt() { return createdAt; }
     public LocalDateTime getUpdatedAt() { return updatedAt; }
 
@@ -70,6 +75,9 @@ public class Application {
     public void setTitle(String title) { this.title = title; }
     public void setDescription(String description) { this.description = description; }
     public void setStatus(ApplicationStatus status) { this.status = status; }
+    public void setSupervisorComment(String supervisorComment) {           // ← Add
+        this.supervisorComment = supervisorComment;
+    }
 
     // ---------- ENUM ----------
     public enum ApplicationStatus {
@@ -94,4 +102,5 @@ public class Application {
     public Company getCompany() { return company; }
     public Supervisor getSupervisor() { return supervisor; }
 
+}
 }
