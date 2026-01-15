@@ -10,11 +10,12 @@
 </head>
 
 <body class="app-shell">
+     <div th:replace="fragments/supervisor-nav :: SupervisorNv"></div>
 <div class="container app-content mt-4">
-    <div th:replace="fragments/supervisor-nav :: SupervisorNv"></div>
+   
 
     <div class="glass p-4 mb-4">
-        <h3 class="mb-1">Welcome,
+        <h3 class="mb-1">Welcome
             <span th:text="${supervisor.fullName}">Supervisor</span>
         </h3>
         <div class="small-muted">Supervisor dashboard overview</div>
@@ -56,32 +57,26 @@
             <td th:text="${app.id}">1</td>
             <td th:text="${companyMap[app.companyId]}">Company</td>
             <td th:text="${app.status}">Pending</td>
+
             <td th:text="${#temporals.format(app.createdAt, 'dd MMM yyyy')}">Date</td>
             <td class="d-flex gap-2">
 
                 <!-- View button -->
                 <a class="btn btn-outline-info btn-sm"
-                   th:href="@{/supervisor/applications/view/{id}(id=${app.id})}">
+                   th:href="@{/supervisor/app_view(id=${app.id})}">
                     View
                 </a>
 
-                <!-- Approve button -->
-                <form th:action="@{/supervisor/applications/{id}/accept(id=${app.id})}" method="post">
-                    <button class="btn btn-success btn-sm"
-                            type="submit"
-                            th:disabled="${app.status != 'PENDING'}">
-                        Approve
-                    </button>
-                </form>
+                
 
                 <!-- Reject button -->
-                <form th:action="@{/supervisor/applications/{id}/reject(id=${app.id})}" method="post">
+                <!-- <form th:action="@{/supervisor/applications/{id}/reject(id=${app.id})}" method="post">
                     <button class="btn btn-danger btn-sm"
                             type="submit"
-                            th:disabled="${app.status != 'PENDING'}">
+                            th:disabled="${app.status != T(project.demo.entity.Application.ApplicationStatus).PENDING}">
                         Reject
                     </button>
-                </form>
+                </form> -->
 
             </td>
         </tr>

@@ -85,5 +85,15 @@ public class ApplicationService {
     public Application save(Application application) {
         return applicationRepository.save(application);
     }
+    @Autowired
+    private project.demo.repository.CompanyRepository companyRepository;
+
+    public Application assignCompany(Integer applicationId, Integer companyId) {
+        return applicationRepository.findById(applicationId).map(app -> {
+            companyRepository.findById(companyId).ifPresent(company -> app.setCompanyId(company.getId()));
+            return applicationRepository.save(app);
+        }).orElse(null);
+    }
+
 
 }

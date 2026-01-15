@@ -13,9 +13,8 @@ public class Student {
     @Column(name = "full_name", nullable = false)
     private String fullName;
 
-    // ✅ FIXED: phone number MUST be String
     @Column(name = "phone_number", unique = true)
-    private String phoneNumber;
+    private Integer phoneNumber;
 
     @Column(name = "email", unique = true)
     private String email;
@@ -53,12 +52,12 @@ public class Student {
     }
 
     // ✅ FIXED
-    public String getPhoneNumber() {
+    public Integer getPhoneNumber() {
         return phoneNumber;
     }
 
     // ✅ FIXED
-    public void setPhoneNumber(String phoneNumber) {
+    public void setPhoneNumber(Integer phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
 

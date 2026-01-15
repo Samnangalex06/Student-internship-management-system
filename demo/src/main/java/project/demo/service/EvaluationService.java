@@ -13,7 +13,7 @@ public class EvaluationService {
     @Autowired
     private EvaluationRepository evaluationRepository;
 
-    public Evaluation addEvaluation(Evaluation evaluation) {
+    public  Evaluation addEvaluation(Evaluation evaluation) {
         return evaluationRepository.save(evaluation);
     }
 
@@ -31,5 +31,16 @@ public class EvaluationService {
 
     public List<Evaluation> getByApplication(Integer applicationId) {
         return evaluationRepository.findByApplicationId(applicationId);
+    }
+    public List<Evaluation> getEvaluationsByApplicationId(Integer applicationId) {
+        return evaluationRepository.findByApplication_Id(applicationId);
+    }
+    public Evaluation getByApplicationAndSupervisor(
+            Integer applicationId,
+            Integer supervisorId
+    ) {
+        return evaluationRepository
+                .findByApplication_IdAndSupervisor_Id(applicationId, supervisorId)
+                .orElse(null);
     }
 }

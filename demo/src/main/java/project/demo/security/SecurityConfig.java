@@ -27,6 +27,7 @@ public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     http
         .csrf(csrf -> csrf.disable())
         .authorizeHttpRequests(auth -> auth
+            .requestMatchers("/uploads/**").permitAll()
             .requestMatchers("/login").permitAll()
             .requestMatchers("/api/companies/**").hasAuthority("ADMIN")
             .requestMatchers("/admin/**").hasAuthority("ADMIN")   

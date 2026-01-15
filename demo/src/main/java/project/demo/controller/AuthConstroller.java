@@ -14,7 +14,7 @@ public class AuthConstroller {
         if (error != null) {
             model.addAttribute("error", "Invalid email or password");
         }
-        return "/login";
+        return "login";
     }
     
     

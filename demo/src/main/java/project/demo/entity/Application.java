@@ -12,7 +12,7 @@ public class Application {
     private Integer id;
 
     // ---------- FOREIGN KEYS (IDS ONLY) ----------
-    @Column(name = "student_id", nullable = false)
+    @Column(name = "student_id",nullable = false)
     private Integer studentId;
 
     @Column(name = "company_id", nullable = false)
@@ -85,4 +85,22 @@ public class Application {
         APPROVED,
         REJECTED
     }
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "student_id", insertable = false, updatable = false)
+    private Student student;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "company_id", insertable = false, updatable = false)
+    private Company company;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "supervisor_id",insertable = false, updatable = false)
+    private Supervisor supervisor;
+
+
+    public Student getStudent() { return student; }
+    public Company getCompany() { return company; }
+    public Supervisor getSupervisor() { return supervisor; }
+
+}
 }

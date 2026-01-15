@@ -56,5 +56,8 @@ public class DocumentService {
     public List<Document> getDocumentsByApplication(Application application) {
         return documentRepository.findByInternshipAppId(application);
     }
+    public Document getById(Integer id) {
+        return documentRepository.findById(id).orElse(null);
+    }
 }
 
