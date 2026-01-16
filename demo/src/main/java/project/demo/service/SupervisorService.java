@@ -18,10 +18,6 @@ public class SupervisorService {
         this.supervisorRepository = supervisorRepository;
     }
 
-    /* =========================
-       READ
-       ========================= */
-
     public List<SupervisorDTO> getAllSupervisors() {
         return supervisorRepository.findAll()
                 .stream()
@@ -39,10 +35,6 @@ public class SupervisorService {
         return supervisorRepository.existsByUserId(userId);
     }
 
-    /* =========================
-       CREATE
-       ========================= */
-
     public Supervisor create(Supervisor supervisor) {
 
         if (supervisorRepository.existsByEmail(supervisor.getEmail())) {
@@ -51,10 +43,6 @@ public class SupervisorService {
 
         return supervisorRepository.save(supervisor);
     }
-
-    /* =========================
-       UPDATE
-       ========================= */
 
     public Supervisor update(Integer id, Supervisor updated) {
 
@@ -68,9 +56,6 @@ public class SupervisorService {
         return supervisorRepository.save(existing);
     }
 
-    /* =========================
-       DELETE
-       ========================= */
 
     public void delete(Integer id) {
         if (!supervisorRepository.existsById(id)) {

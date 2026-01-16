@@ -1,97 +1,88 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-  <body>
+<body>
 
-    <nav th:fragment="studentNav" class="app-nav">
+<nav th:fragment="studentNav"
+     class="navbar navbar-expand-lg navbar-dark app-nav">
 
-      <style>
-        .app-nav {
-          position: sticky;
-          top: 0;
-          z-index: 1000;
+  <div class="container-fluid">
 
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
+    <!-- Brand -->
+    <a class="navbar-brand fw-semibold" th:href="@{/student/dashboard}">
+      SIMS <span class="badge badge-soft ms-2">Student</span>
+    </a>
 
-          padding: 0.75rem 1.25rem;
-          background: rgba(20, 20, 30, 0.85);
-          backdrop-filter: blur(10px);
+    <!-- Mobile toggle -->
+    <button class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#studentNavMenu"
+            aria-controls="studentNavMenu"
+            aria-expanded="false"
+            aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
 
-          border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-        }
+    <!-- Menu -->
+    <div class="collapse navbar-collapse" id="studentNavMenu">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0 gap-lg-2">
 
-        .app-nav .nav-left {
-          display: flex;
-          align-items: center;
-          gap: 1rem;
-          flex-wrap: wrap;
-        }
+        <li class="nav-item">
+          <a class="nav-link" th:href="@{/student/dashboard}">Dashboard</a>
+        </li>
 
-        .app-nav .brand {
-          font-weight: 700;
-          color: #ffffff;
-        }
+        <li class="nav-item">
+          <a class="nav-link" th:href="@{/student/applications}">Applications</a>
+        </li>
 
-        .app-nav .brand .role {
-          font-size: 0.75rem;
-          padding: 0.2rem 0.45rem;
-          margin-left: 0.35rem;
-          border-radius: 999px;
-          background: linear-gradient(135deg, #0d6efd, #6610f2);
-          color: #ffffff;
-        }
+        <li class="nav-item">
+          <a class="nav-link" th:href="@{/student/evaluations}">Evaluations</a>
+        </li>
 
-        .app-nav a {
-          text-decoration: none;
-          font-size: 0.9rem;
-          color: #cfd3ff;
-          padding: 0.35rem 0.6rem;
-          border-radius: 6px;
-          transition: all 0.15s ease;
-        }
+        <li class="nav-item">
+          <a class="nav-link" th:href="@{/student/profile}">Profile</a>
+        </li>
 
-        .app-nav a:hover {
-          background: rgba(255, 255, 255, 0.08);
-          color: #ffffff;
-        }
+      </ul>
 
-        .app-nav .logout {
-          color: #ffb4b4;
-          font-weight: 500;
-        }
-
-        .app-nav .logout:hover {
-          background: rgba(220, 53, 69, 0.25);
-          color: #ffffff;
-        }
-
-        @media (max-width: 768px) {
-          .app-nav {
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 0.5rem;
-          }
-
-          .app-nav .logout {
-            align-self: flex-end;
-          }
-        }
-      </style>
-
-      <div class="nav-left">
-        <span class="brand">
-          SIMS <span class="role">Student</span>
-        </span>
-
-        <a th:href="@{/student/dashboard}">Dashboard</a>
-        <a th:href="@{/student/applications}">Applications</a>
-        <a th:href="@{/student/evaluations}">Evaluations</a>
-        <a th:href="@{/student/profile}">Profile</a>
+      <!-- Right -->
+      <div class="d-flex">
+        <a class="btn btn-outline-light btn-sm" th:href="@{/logout}">
+          Logout
+        </a>
       </div>
+    </div>
 
-      <a class="logout" th:href="@{/logout}">Logout</a>
-    </nav>
+  </div>
+</nav>
 
-  </body>
+<!-- Style -->
+<style>
+  .app-nav {
+    background: rgba(20, 20, 30, 0.85);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .badge-soft {
+    background: linear-gradient(135deg, #0d6efd, #6610f2);
+    color: #fff;
+    font-size: 0.75rem;
+    border-radius: 999px;
+  }
+
+  .navbar-nav .nav-link {
+    color: #cfd3ff;
+    border-radius: 6px;
+    padding: 0.4rem 0.7rem;
+    transition: all .15s ease;
+  }
+
+  .navbar-nav .nav-link:hover {
+    background: rgba(255,255,255,0.08);
+    color: #fff;
+  }
+</style>
+
+</body>
 </html>
