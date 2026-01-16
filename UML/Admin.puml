@@ -1,0 +1,16 @@
+@startuml
+
+actor Admin
+left to right direction
+usecase "login" as login
+rectangle "Admin Function"{
+    usecase "Manage Students CRUD" as a1
+    usecase "Manage Supervisors CRUD" as a2
+    usecase "View Student Internship Applications" as a3
+    usecase "Manage Company" as a4
+}
+Admin --> login
+login --> a1
+login --> a2
+login --> a3
+login --> a4

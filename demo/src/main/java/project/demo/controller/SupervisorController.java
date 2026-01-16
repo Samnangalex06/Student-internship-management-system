@@ -233,10 +233,7 @@ public class SupervisorController {
         }
 
 
-        
 
-
-        
     
         @GetMapping("/evaluation")
         public String showAssignApplications(Model model) {

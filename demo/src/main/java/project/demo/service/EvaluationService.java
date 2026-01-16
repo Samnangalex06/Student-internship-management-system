@@ -43,4 +43,8 @@ public class EvaluationService {
                 .findByApplication_IdAndSupervisor_Id(applicationId, supervisorId)
                 .orElse(null);
     }
+
+    public List<Evaluation> getEvaluationsByStudentId(Integer studentId) {
+        return evaluationRepository.findAllByApplication_Student_Id(studentId);
+    }
 }

@@ -17,24 +17,24 @@ public class CompanyAdminController {
         this.companyRepository = companyRepository;
     }
 
-    // ✅ List companies page
+    // List companies page
  
 
-    // ✅ Show create form
+    // Show create form
     @GetMapping("/create")
     public String showCreateForm(Model model) {
         model.addAttribute("company", new Company());
         return "Admin/company-form";
     }
 
-    // ✅ Handle create submit
+    //  Handle create submit
     @PostMapping("/create")
     public String createCompany(@ModelAttribute("company") Company company) {
         companyRepository.save(company);
         return "redirect:/admin/companies";
     }
 
-    // ✅ Show edit form
+    //  Show edit form
     @GetMapping("/edit/{id}")
     public String showEditForm(@PathVariable Integer id, Model model) {
         Company company = companyRepository.findById(id)
@@ -43,7 +43,7 @@ public class CompanyAdminController {
         return "Admin/company-form";
     }
 
-    // ✅ Handle edit submit
+    //  Handle edit submit
     @PostMapping("/edit/{id}")
     public String updateCompany(@PathVariable Integer id,
                                 @ModelAttribute("company") Company company) {
@@ -52,7 +52,7 @@ public class CompanyAdminController {
         return "redirect:/admin/companies";
     }
 
-    // ✅ Delete (POST because HTML form uses POST)
+    //  Delete (POST because HTML form uses POST)
     @PostMapping("/delete/{id}")
     public String deleteCompany(@PathVariable Integer id) {
         companyRepository.deleteById(id);

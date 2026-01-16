@@ -1,19 +1,23 @@
 package project.demo.service;
 
+import project.demo.repository.DocumentRepository;
+import project.demo.repository.CompanyRepository;
 import project.demo.entity.Application;
 import project.demo.repository.ApplicationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ApplicationService {
     
     @Autowired
     private ApplicationRepository applicationRepository;
-    
+    @Autowired
+    private DocumentRepository documentRepository;
+
     // Create a new application
     public Application createApplication(Application application) {
         return applicationRepository.save(application);
@@ -62,10 +66,12 @@ public class ApplicationService {
         }).orElse(null);
     }
     
-    // Delete application
+    @Transactional
     public void deleteApplication(Integer id) {
+        documentRepository.deleteByInternshipAppId_Id(id);
         applicationRepository.deleteById(id);
     }
+
     
     // Approve application
     public Application approveApplication(Integer id) {

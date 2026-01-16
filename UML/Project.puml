@@ -1,0 +1,37 @@
+@startuml
+
+actor Student
+actor Supervisor
+
+usecase "Login" as login
+
+left to right direction
+
+Student --> login
+Supervisor --> login
+
+rectangle "Student Function"{
+    usecase "Create Internship Application" as s1
+    usecase "Upload CV/Documents" as s2
+    usecase "View Application Status" as s3
+    usecase "Edit/Delete Application" as s4
+    usecase "View Supervisor Evaluation" as s5
+    usecase "Update Profile Info" as s6
+}
+
+login --> s1
+login --> s2
+login --> s3
+login --> s4
+login --> s5
+login --> s6
+
+rectangle "Supervisor Function"{
+    usecase "View Assigned Applications" as super1
+    usecase "Accept/Reject Internship Requests" as super2
+    usecase "Submit Evaluation Form" as super3
+}
+login --> super1
+login --> super2
+login --> super3
+

@@ -1,0 +1,23 @@
+@startuml
+actor User
+
+participant "Login Page" as UI
+participant "Auth Controller" as Controller
+participant "Spring Security" as Security
+participant "UserDetailsService" as Service
+database "User DB" as DB
+participant "BCrypt" as BCrypt
+
+
+User -> UI : Enter email & password
+UI -> Controller : send login request
+Controller -> Security : authenticate(credentials)
+
+Security -> Service : loadUserByEmail(email)
+Service -> DB : find user by email
+DB --> Service : user + hashed password
+
+Service -> BCrypt : match(rawPassword, hashedPassword)
+BCrypt --> Service : result (match / not match)
+
+@enduml

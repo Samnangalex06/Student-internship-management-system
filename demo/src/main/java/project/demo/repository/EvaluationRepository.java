@@ -13,5 +13,5 @@ public interface EvaluationRepository extends JpaRepository<Evaluation, Integer>
             Integer applicationId,
             Integer supervisorId
     );
-
+    List<Evaluation> findAllByApplication_Student_Id(Integer studentId);
 }

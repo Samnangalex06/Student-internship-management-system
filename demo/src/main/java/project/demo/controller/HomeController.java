@@ -1,14 +1,14 @@
-package project.demo.controller;
+// package project.demo.controller;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
+// import org.springframework.stereotype.Controller;
+// import org.springframework.web.bind.annotation.GetMapping;
 
-@Controller
-public class HomeController {
+// @Controller
+// public class HomeController {
 
-    @GetMapping("/home")
-    public String home() {
-        return "redirect:/login";
-    }
+//     @GetMapping("/home")
+//     public String home() {
+//         return "redirect:/login";
+//     }
     
-}
+// }

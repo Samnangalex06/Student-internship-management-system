@@ -22,7 +22,7 @@ public class StudentAdminController {
         this.studentService = studentService;
         this.userService = userService;
     }
-
+    
     // =========================
     // LIST STUDENTS
     // =========================
@@ -53,7 +53,7 @@ public class StudentAdminController {
             // Create user with STUDENT role
             User createdUser = userService.createUserWithRole(user, RoleName.STUDENT);
 
-            // ✅ FIXED: match Student.java
+            // FIXED: match Student.java
             student.setUser(createdUser);
 
             // Save student

@@ -27,7 +27,7 @@
     <hr class="border-light opacity-10 my-4" />
 
     <!-- Empty State -->
-    <div th:if="${evaluations == null || #lists.isEmpty(evaluations)}">
+    <div th:if="${evaluations == null or #lists.isEmpty(evaluations)}">
       <div class="alert alert-dark border-0"
            style="background: rgba(255,255,255,0.06)">
         No evaluations available yet.
@@ -36,12 +36,12 @@
 
     <!-- Evaluation Table -->
     <div class="table-responsive"
-         th:if="${evaluations != null && !#lists.isEmpty(evaluations)}">
+         th:if="${evaluations != null and !#lists.isEmpty(evaluations)}">
 
       <table class="table table-dark table-darkish table-striped table-hover align-middle">
         <thead>
           <tr>
-            <th>Application</th>
+            <th>Application ID</th>
             <th>Score</th>
             <th>Comment</th>
           </tr>
@@ -49,20 +49,25 @@
 
         <tbody>
           <tr th:each="e : ${evaluations}">
-            <td th:text="${e.application.title}">
-              Application Title
-            </td>
 
+          <td th:text="${e.application.title}">
+            Application Title
+          </td>
+
+
+            <!-- Score -->
             <td>
               <span class="badge badge-soft"
-                    th:text="${e.score}">
+                    th:text="${e.score != null ? e.score : '-'}">
                 0
               </span>
             </td>
 
-            <td th:text="${e.comment}">
+            <!-- Comment -->
+            <td th:text="${e.comment != null ? e.comment : 'No comment'}">
               Comment
             </td>
+
           </tr>
         </tbody>
       </table>

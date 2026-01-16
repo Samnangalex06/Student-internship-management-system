@@ -8,7 +8,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import jakarta.servlet.http.HttpSession;
 import project.demo.entity.Application;
+import project.demo.entity.Evaluation;
 import project.demo.entity.Student;
 import project.demo.repository.CompanyRepository;
 import project.demo.repository.StudentRepository;
@@ -16,6 +18,7 @@ import project.demo.repository.SupervisorRepository;
 import project.demo.repository.UserRepository;
 import project.demo.service.ApplicationService;
 import project.demo.service.DocumentService;
+import project.demo.service.EvaluationService;
 
 import java.io.IOException;
 import java.util.*;
@@ -43,6 +46,9 @@ public class StudentController {
     @Autowired
     private SupervisorRepository supervisorRepository;
 
+    @Autowired
+    private EvaluationService evaluationService;
+
     // =====================================================
     // Helper: get current logged-in student
     // =====================================================
@@ -55,7 +61,7 @@ public class StudentController {
         }
 
         return userRepository.findByEmailWithRoles(email)
-                .flatMap(user -> studentRepository.findByUser(user)) // ✅ FIXED
+                .flatMap(user -> studentRepository.findByUser(user))
                 .orElse(null);
     }
 
@@ -123,7 +129,7 @@ public class StudentController {
         return "student/profile-form";
     }
     @PostMapping("/profile/save")
-public String saveProfile(
+    public String saveProfile(
         @ModelAttribute Student formStudent,
         Model model
 ) {
@@ -215,13 +221,32 @@ public String saveProfile(
 
         application.setStudentId(student.getId());
 
-        if (application.getStatus() == null) {
+        Application savedApplication;
+
+        // EDIT
+        if (application.getId() != null) {
+            Application existing =
+                    applicationService.getById(application.getId());
+
+            if (existing == null ||
+                !existing.getStudentId().equals(student.getId())) {
+                return "redirect:/student/applications";
+            }
+
+            existing.setTitle(application.getTitle());
+            existing.setDescription(application.getDescription());
+            existing.setCompanyId(application.getCompanyId());
+            existing.setSupervisorId(application.getSupervisorId());
+
+            savedApplication = applicationService.save(existing);
+
+        } 
+        // CREATE
+        else {
             application.setStatus(Application.ApplicationStatus.PENDING);
+            savedApplication = applicationService.createApplication(application);
         }
-
-        Application savedApplication =
-                applicationService.createApplication(application);
-
+        // documents only on create/edit
         if (documents != null && documents.length > 0) {
             documentService.saveDocuments(
                     documents,
@@ -260,13 +285,46 @@ public String saveProfile(
 
         return "student/application-form";
     }
+    // =====================================================
+    // DELETE APPLICATION
+    // =====================================================
+    @PostMapping("/applications/{id}/delete")
+    public String deleteApplication(@PathVariable Integer id) {
+
+        Student student = getCurrentStudent();
+        if (student == null) {
+            return "redirect:/login";
+        }
+
+        Application app = applicationService.getById(id);
+
+        if (app == null || !app.getStudentId().equals(student.getId())) {
+            return "redirect:/student/applications";
+        }
+
+        applicationService.deleteApplication(id);
+
+        return "redirect:/student/applications";
+    }
 
     // =====================================================
     // EVALUATIONS (PLACEHOLDER)
     // =====================================================
-    @GetMapping("/evaluations")
+   @GetMapping("/evaluations")
     public String evaluations(Model model) {
-        model.addAttribute("evaluations", Collections.emptyList());
+
+        Student student = getCurrentStudent();
+
+        if (student == null) {
+            return "redirect:/login";
+        }
+
+        List<Evaluation> evaluations =
+                evaluationService.getEvaluationsByStudentId(student.getId());
+
+        model.addAttribute("evaluations", evaluations);
+
         return "student/evaluation-list";
     }
+
 }

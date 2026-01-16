@@ -52,9 +52,10 @@ public class Evaluation {
         return score;
     }   
 
-    public Application getapplication(){
-        return application;
+    public Application getApplication() {
+    return application;
     }
+
     public void setScore(Integer score){
         this.score =score;
     }

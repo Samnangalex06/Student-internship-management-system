@@ -1,0 +1,44 @@
+@startuml
+actor Admin
+participant "Student Management UI" as UI
+participant "Student Controller" as Controller
+participant "Student Service" as Service
+database "Database" as DB
+
+== Create Student ==
+Admin -> UI : Enter student details
+UI -> Controller : create(student, user)
+Controller -> Service : validate & create student
+Service -> DB : insert student record
+DB --> Service : success
+Service --> Controller : confirmation
+Controller --> UI : student created message
+
+== View Student ==
+Admin -> UI : View student list
+UI -> Controller : getStudents()
+Controller -> Service : fetch students
+Service -> DB : query student records
+DB --> Service : student list
+Service --> Controller : data
+Controller --> UI : display students
+
+== Update Student ==
+Admin -> UI : Edit student details
+UI -> Controller : update(id, data)
+Controller -> Service : validate & update
+Service -> DB : update student record
+DB --> Service : success
+Service --> Controller : confirmation
+Controller --> UI : update success message
+
+== Delete Student ==
+Admin -> UI : Delete student
+UI -> Controller : delete(id)
+Controller -> Service : remove student
+Service -> DB : delete student record
+DB --> Service : success
+Service --> Controller : confirmation
+Controller --> UI : delete success message
+
+@enduml
