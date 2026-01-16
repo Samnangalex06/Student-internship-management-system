@@ -16,4 +16,6 @@ public interface DocumentRepository extends JpaRepository<Document, Integer> {
     @Query("SELECT d FROM Document d WHERE d.internshipAppId.id = :appId")
     List<Document> findByApplicationId(@Param("appId") Integer appId);
     
+    void deleteByInternshipAppId_Id(Integer applicationId);
+    
 }

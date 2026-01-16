@@ -61,7 +61,7 @@ public class StudentController {
         }
 
         return userRepository.findByEmailWithRoles(email)
-                .flatMap(user -> studentRepository.findByUser(user)) // ✅ FIXED
+                .flatMap(user -> studentRepository.findByUser(user))
                 .orElse(null);
     }
 
@@ -129,7 +129,7 @@ public class StudentController {
         return "student/profile-form";
     }
     @PostMapping("/profile/save")
-public String saveProfile(
+    public String saveProfile(
         @ModelAttribute Student formStudent,
         Model model
 ) {
@@ -221,13 +221,33 @@ public String saveProfile(
 
         application.setStudentId(student.getId());
 
-        if (application.getStatus() == null) {
+        Application savedApplication;
+
+        // EDIT
+        if (application.getId() != null) {
+            Application existing =
+                    applicationService.getById(application.getId());
+
+            if (existing == null ||
+                !existing.getStudentId().equals(student.getId())) {
+                return "redirect:/student/applications";
+            }
+
+            existing.setTitle(application.getTitle());
+            existing.setDescription(application.getDescription());
+            existing.setCompanyId(application.getCompanyId());
+            existing.setSupervisorId(application.getSupervisorId());
+
+            savedApplication = applicationService.save(existing);
+
+        } 
+        // CREATE
+        else {
             application.setStatus(Application.ApplicationStatus.PENDING);
+            savedApplication = applicationService.createApplication(application);
         }
 
-        Application savedApplication =
-                applicationService.createApplication(application);
-
+        // documents only on create/edit
         if (documents != null && documents.length > 0) {
             documentService.saveDocuments(
                     documents,
@@ -238,6 +258,7 @@ public String saveProfile(
 
         return "redirect:/student/applications";
     }
+
 
     // =====================================================
     // VIEW / EDIT APPLICATION
@@ -265,6 +286,27 @@ public String saveProfile(
         );
 
         return "student/application-form";
+    }
+    // =====================================================
+    // DELETE APPLICATION
+    // =====================================================
+    @PostMapping("/applications/{id}/delete")
+    public String deleteApplication(@PathVariable Integer id) {
+
+        Student student = getCurrentStudent();
+        if (student == null) {
+            return "redirect:/login";
+        }
+
+        Application app = applicationService.getById(id);
+
+        if (app == null || !app.getStudentId().equals(student.getId())) {
+            return "redirect:/student/applications";
+        }
+
+        applicationService.deleteApplication(id);
+
+        return "redirect:/student/applications";
     }
 
     // =====================================================

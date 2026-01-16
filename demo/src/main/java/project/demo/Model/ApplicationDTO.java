@@ -3,26 +3,34 @@ package project.demo.Model;
 import java.time.LocalDateTime;
 
 import project.demo.entity.Application;
-
+import jakarta.validation.constraints.*;
 
 public class ApplicationDTO {
 
     private Integer id;
 
+    @NotNull()
     private Integer studentId;
+    @NotBlank()
     private String studentName;
-
+    @NotNull()
     private Integer companyId;
+    @NotBlank()
     private String companyName;
-
+    
+    @NotNull()
     private Integer supervisorId;
 
+    @NotBlank(message = "title is require")
     private String title;
+
     private String description;
+
     private Application.ApplicationStatus status;
+
     private LocalDateTime createdAt;
 
-    // 🔑 REQUIRED constructor for JPQL
+    // REQUIRED constructor for JPQL
     public ApplicationDTO(
             Integer id,
             Integer studentId,

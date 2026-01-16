@@ -64,6 +64,7 @@ public class Application {
     public LocalDateTime getUpdatedAt() { return updatedAt; }
 
     // ---------- SETTERS ----------
+    public void setId(Integer id) { this.id = id; }
     public void setStudentId(Integer studentId) { this.studentId = studentId; }
     public void setCompanyId(Integer companyId) { this.companyId = companyId; }
     public void setSupervisorId(Integer supervisorId) { this.supervisorId = supervisorId; }
