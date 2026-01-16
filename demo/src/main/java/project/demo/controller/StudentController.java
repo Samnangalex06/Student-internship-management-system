@@ -8,7 +8,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import jakarta.servlet.http.HttpSession;
 import project.demo.entity.Application;
+import project.demo.entity.Evaluation;
 import project.demo.entity.Student;
 import project.demo.repository.CompanyRepository;
 import project.demo.repository.StudentRepository;
@@ -16,6 +18,7 @@ import project.demo.repository.SupervisorRepository;
 import project.demo.repository.UserRepository;
 import project.demo.service.ApplicationService;
 import project.demo.service.DocumentService;
+import project.demo.service.EvaluationService;
 
 import java.io.IOException;
 import java.util.*;
@@ -42,6 +45,9 @@ public class StudentController {
 
     @Autowired
     private SupervisorRepository supervisorRepository;
+
+    @Autowired
+    private EvaluationService evaluationService;
 
     // =====================================================
     // Helper: get current logged-in student
@@ -264,9 +270,21 @@ public String saveProfile(
     // =====================================================
     // EVALUATIONS (PLACEHOLDER)
     // =====================================================
-    @GetMapping("/evaluations")
+   @GetMapping("/evaluations")
     public String evaluations(Model model) {
-        model.addAttribute("evaluations", Collections.emptyList());
+
+        Student student = getCurrentStudent();
+
+        if (student == null) {
+            return "redirect:/login";
+        }
+
+        List<Evaluation> evaluations =
+                evaluationService.getEvaluationsByStudentId(student.getId());
+
+        model.addAttribute("evaluations", evaluations);
+
         return "student/evaluation-list";
     }
+
 }
