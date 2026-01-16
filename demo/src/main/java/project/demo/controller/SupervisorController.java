@@ -8,7 +8,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import project.demo.Model.ApplicationDTO;
 import project.demo.entity.Application;
@@ -20,17 +20,18 @@ import project.demo.entity.User;
 
 import project.demo.repository.CompanyRepository;
 import project.demo.repository.DocumentRepository;
-import project.demo.repository.EvaluationRepository;
 import project.demo.repository.SupervisorRepository;
 import project.demo.repository.UserRepository;
 import project.demo.service.ApplicationService;
 import project.demo.service.EvaluationService;
-
+import project.demo.service.SupervisorService;
 
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+
 
 
 
@@ -64,12 +65,19 @@ public class SupervisorController {
     @Autowired
     private EvaluationService evaluationService;
 
-    @Autowired
-    private EvaluationRepository evaluationRepository;
+
 
 
     @Autowired
     private project.demo.repository.ApplicationRepository applicationRepository;
+
+    private final SupervisorService supervisorService ;
+
+    public SupervisorController(SupervisorService supervisorService){
+        this.supervisorService = supervisorService;
+    }
+    
+
 
     // =========================
     // Supervisor Dashboard
@@ -141,15 +149,15 @@ public class SupervisorController {
         // =========================
         // Reject Application
         // =========================
-        @PostMapping("/applications/{id}/reject")
-        public String rejectApplication(@PathVariable Integer id) {
+   @PostMapping("/applications/{id}/reject")
+         public String rejectApplication(@PathVariable Integer id) {
                 applicationService.rejectApplication(id);
                 return "redirect:/supervisor/dashboard";
         }
 
-        // =========================
-        // Supervisor Assign Applications
-        // ========================
+        // ===============================
+        // Supervisor Approve Applications
+        // ===============================
 
       @GetMapping("/approvals")
         public String approvals(Model model,
@@ -195,7 +203,8 @@ public class SupervisorController {
         }
 
         return "Supervisor/approvals";
-        }
+     }
+
         @GetMapping("/app_view")
         public String getDetailApp(@RequestParam Integer id, Model model) {
 
@@ -304,28 +313,44 @@ public class SupervisorController {
         return "redirect:/supervisor/evaluation"; // reload the page
         }
 
-        @PostMapping("/applications/{id}/delete")
-        public String deleteApplication(@PathVariable Integer id) {
 
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth == null) return "redirect:/login";
 
-        User user = userRepo.findByEmailWithRoles(auth.getName()).orElseThrow();
-        Supervisor supervisor = supervisorRepository.findByUserId(user.getId()).orElseThrow();
+        @GetMapping("/profile")
+        public String profile(Model model ,Authentication authentication) {
 
-        Application application = applicationRepository
-                .findById(id)
-                .orElseThrow(() -> new RuntimeException("Application not found"));
+                Supervisor supervisor = supervisorRepository.findByEmail(authentication.getName())
+                        .orElseThrow(() -> new RuntimeException("Supervisor not found"));
 
-        // 🔐 Security check: supervisor owns this application
-        if (!application.getSupervisorId().equals(supervisor.getId())) {
-                throw new RuntimeException("Unauthorized delete attempt");
+                Supervisor supervisorData = supervisorService.getById(supervisor.getId());
+                System.out.println(supervisorData +"not error");
+                model.addAttribute("supervisor",supervisorData);
+                
+
+            return "Supervisor/profile";
         }
+        
 
-        applicationRepository.delete(application);
+        @PostMapping("/profile/save")
+        public String SaveProfile(@ModelAttribute("supervisor") Supervisor supervisor,RedirectAttributes redirectAttributes) {
+           try{
+                Supervisor supervisorChange= supervisorService.getById(supervisor.getId());
+                supervisorChange.setFullName(supervisor.getFullName());
+                supervisorChange.setDepartment(supervisor.getDepartment());
+                supervisorChange.setEmail(supervisor.getEmail());
+                supervisorChange.setPhoneNumber(supervisor.getPhoneNumber());
 
-        return "redirect:/supervisor/dashboard";
+                supervisorService.update(supervisorChange.getId(), supervisorChange);
+                System.out.println("this error" + supervisorChange.getFullName());
+                redirectAttributes.addFlashAttribute("success",true);
+
+           }catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", true);
+            e.printStackTrace();
+           }
+            
+            return "redirect:/supervisor/profile";
         }
+        
 
 
         

@@ -24,10 +24,6 @@ public class Supervisor {
     private Integer phoneNumber;
     private String department;
 
-    
-    // @OneToMany(mappedBy = "supervisor")
-    // @JsonIgnore
-    // private List<Student> students;
 
     // --- Getters & Setters ---
     public Integer getId() { return id; }
