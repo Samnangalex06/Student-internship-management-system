@@ -1,0 +1,30 @@
+@startuml
+start
+
+:User opens login page;
+:User enters email & password;
+:User submits login form;
+
+:Validate input data;
+if (Input valid?) then (Yes)
+    :Spring Security receives request;
+    :Load user by email;
+    if (User exists?) then (Yes)
+        :Retrieve hashed password;
+        :Compare password using BCrypt;
+        if (Password matches?) then (Yes)
+            :Authenticate user;
+            :Assign role (Admin/Student/Supervisor);
+            :Redirect to dashboard;
+        else (No)
+            :Show invalid password message;
+        endif
+    else (No)
+        :Show user not found message;
+    endif
+else (No)
+    :Show validation error message;
+endif
+
+stop
+@enduml

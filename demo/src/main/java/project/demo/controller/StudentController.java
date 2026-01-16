@@ -246,7 +246,6 @@ public class StudentController {
             application.setStatus(Application.ApplicationStatus.PENDING);
             savedApplication = applicationService.createApplication(application);
         }
-
         // documents only on create/edit
         if (documents != null && documents.length > 0) {
             documentService.saveDocuments(
@@ -258,7 +257,6 @@ public class StudentController {
 
         return "redirect:/student/applications";
     }
-
 
     // =====================================================
     // VIEW / EDIT APPLICATION
