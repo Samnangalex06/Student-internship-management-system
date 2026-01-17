@@ -37,6 +37,6 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
             return;
         }
 
-        response.sendRedirect("/home");
+        //esponse.sendRedirect("/home");
     }
 }
